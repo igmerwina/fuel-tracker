@@ -1,7 +1,6 @@
-package main
+package config
 
 import (
-	"context"
 	"net/http"
 	"path/filepath"
 	"strconv"
@@ -15,7 +14,7 @@ type Config struct {
 	ScrapeTimeout time.Duration
 }
 
-func loadConfig() Config {
+func Load() Config {
 	return Config{
 		Port:          getenv("PORT", "8080"),
 		CachePath:     filepath.Join("data", "fuel_prices.json"),
@@ -23,12 +22,8 @@ func loadConfig() Config {
 	}
 }
 
-func newHTTPClient(timeout time.Duration) *http.Client {
+func NewHTTPClient(timeout time.Duration) *http.Client {
 	return &http.Client{Timeout: timeout}
-}
-
-func backgroundContext() context.Context {
-	return context.Background()
 }
 
 func scrapeTimeout() time.Duration {

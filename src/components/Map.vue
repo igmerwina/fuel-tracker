@@ -78,19 +78,30 @@ const getFuelTypeLabel = (typeId: string): string => {
   return fuelType?.label || typeId;
 };
 
+const getRon92Price = (station: FuelStation) => {
+  return station.prices.find((price) => price.type === 'RON_92')?.price ?? station.prices[0]?.price ?? 0;
+};
+
 const createMarker = (station: FuelStation) => {
   if (!map) return;
 
   const color = getBrandColor(station.brand);
+  const ron92Price = getRon92Price(station);
   const marker = L.marker([station.latitude, station.longitude], {
     icon: L.divIcon({
       html: `
-        <div class="marker-pin" style="--pin-color: ${color}">
-          <i class="fa-solid fa-gas-pump"></i>
+        <div class="price-marker" style="--pin-color: ${color}">
+          <div class="price-marker__price">
+            <span>RON 92</span>
+            <strong>Rp ${ron92Price.toLocaleString('id-ID')}</strong>
+          </div>
+          <div class="price-marker__pin">
+            <i class="fa-solid fa-gas-pump"></i>
+          </div>
         </div>
       `,
-      iconSize: [38, 46],
-      iconAnchor: [19, 42],
+      iconSize: [98, 58],
+      iconAnchor: [49, 56],
       className: 'fuel-marker',
     }),
   });
@@ -132,7 +143,7 @@ const initMap = () => {
     minZoom: 11,
     zoomControl: false,
     worldCopyJump: false,
-  }).setView([JAKARTA_CENTER.lat, JAKARTA_CENTER.lng], 11);
+  }).setView([JAKARTA_CENTER.lat, JAKARTA_CENTER.lng], 13);
 
   L.control.zoom({ position: 'bottomright' }).addTo(map);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -337,11 +348,46 @@ h3 {
 </style>
 
 <style>
-.marker-pin {
+.price-marker {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: 98px;
+  pointer-events: auto;
+}
+
+.price-marker__price {
+  display: grid;
+  min-width: 86px;
+  padding: 5px 7px;
+  border: 2px solid var(--pin-color);
+  border-radius: 8px;
+  color: #0f172a;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.22);
+  text-align: center;
+}
+
+.price-marker__price span {
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.price-marker__price strong {
+  margin-top: 2px;
+  color: #0f172a;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.price-marker__pin {
   position: relative;
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   place-items: center;
   border: 3px solid #ffffff;
   border-radius: 50% 50% 50% 4px;
@@ -351,8 +397,8 @@ h3 {
   transform: rotate(-45deg);
 }
 
-.marker-pin i {
-  font-size: 13px;
+.price-marker__pin i {
+  font-size: 11px;
   transform: rotate(45deg);
 }
 </style>

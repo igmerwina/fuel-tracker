@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import Header from './components/Header.vue';
+import SearchBar from './components/SearchBar.vue';
 import FilterBar from './components/FilterBar.vue';
 import StationList from './components/StationList.vue';
 import Map from './components/Map.vue';
 import type { FilterState, FuelBrand, FuelStation, FuelType } from './types/index';
-import { fuelStations } from './data/stations';
+import { fuelStations, fuelTypes } from './data/stations';
 import { fetchRealtimePrices } from './services/prices';
 
 const stations = ref<FuelStation[]>(fuelStations);
 
 const filterState = ref<FilterState>({
+  query: '',
   region: '',
   brand: '',
   fuelType: '',
@@ -18,9 +20,35 @@ const filterState = ref<FilterState>({
 
 const mapRef = ref<InstanceType<typeof Map>>();
 
+const fuelAliases: Record<string, string[]> = {
+  RON_90: ['ron 90', 'pertalite', 'revvo 90'],
+  RON_92: ['ron 92', 'pertamax', 'shell super', 'bp 92', 'revvo 92'],
+  RON_95: ['ron 95', 'pertamax green', 'v-power', 'bp ultimate', 'revvo 95'],
+  RON_98: ['ron 98', 'pertamax turbo', 'nitro'],
+  DIESEL_CN_51: ['diesel cn 51', 'dexlite', 'v-power diesel'],
+  DIESEL_CN_53: ['diesel cn 53', 'pertamina dex'],
+};
+
 const filteredStations = computed(() => {
   return stations.value
     .filter((station) => {
+      const query = filterState.value.query.trim().toLowerCase();
+      if (query) {
+        const haystack = [
+          station.name,
+          station.brand,
+          station.region,
+          station.address,
+          ...station.prices.flatMap((price) => [
+            price.type.replaceAll('_', ' '),
+            fuelTypes.find((fuel) => fuel.id === price.type)?.label ?? '',
+            ...(fuelAliases[price.type] ?? []),
+          ]),
+        ]
+          .join(' ')
+          .toLowerCase();
+        if (!haystack.includes(query)) return false;
+      }
       if (filterState.value.region && station.region !== filterState.value.region) return false;
       if (filterState.value.brand && station.brand !== filterState.value.brand) return false;
       if (
@@ -61,8 +89,12 @@ const lastUpdated = computed(() => {
     : '-';
 });
 
-const handleFiltersUpdate = (newFilters: FilterState) => {
-  filterState.value = { ...newFilters };
+const handleFiltersUpdate = (newFilters: Partial<FilterState>) => {
+  filterState.value = { ...filterState.value, ...newFilters };
+};
+
+const handleQueryUpdate = (query: string) => {
+  filterState.value = { ...filterState.value, query };
 };
 
 const handleFlyTo = (station: FuelStation) => {
@@ -102,6 +134,12 @@ onMounted(() => {
       :station-count="filteredStations.length"
       :lowest-price="lowestPrice"
       :last-updated="lastUpdated"
+    />
+
+    <SearchBar
+      :query="filterState.query"
+      :result-count="filteredStations.length"
+      @update-query="handleQueryUpdate"
     />
 
     <main class="workspace">

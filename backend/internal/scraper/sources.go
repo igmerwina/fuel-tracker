@@ -1,4 +1,4 @@
-package main
+package scraper
 
 func sources() []Source {
 	return []Source{

@@ -6,7 +6,7 @@ Backend Go ini melakukan scrape harga BBM saat server dinyalakan, menyimpan hasi
 
 ```bash
 cd backend
-go run .
+go run ./cmd/server
 ```
 
 Server default berjalan di `:8080`.

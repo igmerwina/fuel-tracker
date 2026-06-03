@@ -1,6 +1,6 @@
 import type { FuelStation } from '../types/index';
 
-export const JAKARTA_CENTER = { lat: -6.2, lng: 106.8 };
+export const JAKARTA_CENTER = { lat: -6.195, lng: 106.832 };
 
 export const JAKARTA_BOUNDS = {
   southWest: { lat: -6.39, lng: 106.66 },

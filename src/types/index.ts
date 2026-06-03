@@ -21,6 +21,7 @@ export interface FuelStation {
 }
 
 export interface FilterState {
+  query: string;
   region: Region | '';
   brand: FuelBrand | '';
   fuelType: FuelType | '';

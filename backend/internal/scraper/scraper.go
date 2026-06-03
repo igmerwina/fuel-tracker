@@ -1,4 +1,4 @@
-package main
+package scraper
 
 import (
 	"context"
@@ -12,25 +12,25 @@ import (
 	"time"
 )
 
-type ScrapeService struct {
+type Service struct {
 	client    *http.Client
 	cachePath string
 	lastCache PriceCache
 }
 
-func NewScrapeService(client *http.Client, cachePath string) *ScrapeService {
-	return &ScrapeService{
+func NewService(client *http.Client, cachePath string) *Service {
+	return &Service{
 		client:    client,
 		cachePath: cachePath,
 		lastCache: emptyCache(),
 	}
 }
 
-func (s *ScrapeService) LastCache() PriceCache {
+func (s *Service) LastCache() PriceCache {
 	return s.lastCache
 }
 
-func (s *ScrapeService) ReadCache() (PriceCache, error) {
+func (s *Service) ReadCache() (PriceCache, error) {
 	payload, err := os.ReadFile(s.cachePath)
 	if err != nil {
 		return PriceCache{}, err
@@ -43,7 +43,7 @@ func (s *ScrapeService) ReadCache() (PriceCache, error) {
 	return cache, nil
 }
 
-func (s *ScrapeService) ScrapeAndStore(ctx context.Context) (PriceCache, error) {
+func (s *Service) ScrapeAndStore(ctx context.Context) (PriceCache, error) {
 	cache := emptyCache()
 
 	for _, source := range sources() {
@@ -72,7 +72,7 @@ type SourceResult struct {
 	Stations []StationLocation
 }
 
-func (s *ScrapeService) scrapeSource(ctx context.Context, source Source) (SourceResult, error) {
+func (s *Service) scrapeSource(ctx context.Context, source Source) (SourceResult, error) {
 	switch source.Brand {
 	case "Pertamina":
 		return pricesOnly(scrapePertamina(ctx, s.client, source))
@@ -94,7 +94,7 @@ func pricesOnly(prices []FuelPrice, err error) (SourceResult, error) {
 	return SourceResult{Prices: prices}, nil
 }
 
-func (s *ScrapeService) writeCache(cache PriceCache) error {
+func (s *Service) writeCache(cache PriceCache) error {
 	if err := os.MkdirAll(filepath.Dir(s.cachePath), 0o755); err != nil {
 		return err
 	}

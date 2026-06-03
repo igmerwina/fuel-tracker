@@ -1,12 +1,13 @@
-package main
+package httpapi
 
 import (
 	"encoding/json"
+	"jakarta-bbm-tracker/backend/internal/scraper"
 	"log"
 	"net/http"
 )
 
-func newRouter(service *ScrapeService) http.Handler {
+func NewRouter(service *scraper.Service) http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})

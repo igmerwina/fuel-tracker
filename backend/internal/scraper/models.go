@@ -1,4 +1,4 @@
-package main
+package scraper
 
 type FuelPrice struct {
 	Brand        string `json:"brand"`

@@ -54,14 +54,14 @@ defineProps<{
   resultCount: number;
 }>();
 
-const filterState = ref<FilterState>({
+const filterState = ref<Pick<FilterState, 'region' | 'brand' | 'fuelType'>>({
   region: '',
   brand: '',
   fuelType: '',
 });
 
 const emit = defineEmits<{
-  'update-filters': [value: FilterState];
+  'update-filters': [value: Partial<FilterState>];
 }>();
 
 const emitFilters = () => {
@@ -74,7 +74,7 @@ const resetFilters = () => {
     brand: '',
     fuelType: '',
   };
-  emitFilters();
+  emit('update-filters', { ...filterState.value, query: '' });
 };
 </script>
 
