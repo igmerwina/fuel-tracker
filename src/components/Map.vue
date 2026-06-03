@@ -27,6 +27,16 @@
         {{ selectedStation.address }}
       </p>
 
+      <a
+        class="maps-link"
+        :href="selectedStation.googleMapsUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+        Buka Google Maps
+      </a>
+
       <div class="prices-table">
         <div v-for="price in selectedStation.prices" :key="price.type" class="price-row">
           <span>{{ getFuelTypeLabel(price.type) }}</span>
@@ -262,6 +272,22 @@ h3 {
   margin: 14px 0;
   color: var(--muted);
   font-size: 13px;
+}
+
+.maps-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  color: var(--brand);
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.maps-link:hover {
+  color: var(--brand-strong);
+  text-decoration: underline;
 }
 
 .prices-table {

@@ -42,10 +42,21 @@
 
         <footer class="card-footer">
           <span>Update {{ formatUpdated(station.lastUpdated) }}</span>
-          <button class="view-map-btn" type="button" @click="$emit('flyto', station)">
-            <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
-            <span>Lihat di Peta</span>
-          </button>
+          <div class="actions">
+            <a
+              class="maps-btn"
+              :href="station.googleMapsUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+              <span>Google Maps</span>
+            </a>
+            <button class="view-map-btn" type="button" @click="$emit('flyto', station)">
+              <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
+              <span>Lihat di Peta</span>
+            </button>
+          </div>
         </footer>
       </article>
     </div>
@@ -275,6 +286,14 @@ h3 {
   font-weight: 700;
 }
 
+.actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.maps-btn,
 .view-map-btn {
   display: inline-flex;
   align-items: center;
@@ -287,10 +306,20 @@ h3 {
   background: var(--brand);
   cursor: pointer;
   font-weight: 900;
+  text-decoration: none;
 }
 
 .view-map-btn:hover {
   background: var(--brand-strong);
+}
+
+.maps-btn {
+  color: var(--brand-strong);
+  background: #e7f0f7;
+}
+
+.maps-btn:hover {
+  background: #d7e8f4;
 }
 
 @media (max-width: 1180px) {
@@ -307,6 +336,12 @@ h3 {
   .card-footer {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .actions,
+  .maps-btn,
+  .view-map-btn {
+    width: 100%;
   }
 }
 </style>

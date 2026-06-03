@@ -15,6 +15,7 @@ export interface FuelStation {
   address: string;
   latitude: number;
   longitude: number;
+  googleMapsUrl: string;
   prices: FuelPrice[];
   lastUpdated: string;
 }
