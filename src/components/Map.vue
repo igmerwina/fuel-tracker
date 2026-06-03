@@ -16,7 +16,7 @@
         <button
           class="grid h-10 w-10 place-items-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200"
           type="button"
-          title="Close details"
+          title="Tutup detail"
           @click="selectedStation = null"
         >
           <i class="fa-solid fa-xmark" aria-hidden="true"></i>
@@ -26,7 +26,7 @@
       <p class="mt-2 text-sm font-semibold text-slate-500">{{ selectedStation.address }}</p>
       <div class="mt-4 rounded-xl bg-emerald-50 p-3 text-emerald-900" v-if="selectedStation.savingsPerLiter > 0">
         <strong class="block text-sm font-black">
-          You save Rp {{ selectedStation.savingsPerLiter.toLocaleString('id-ID') }}/L compared to average
+          Hemat Rp {{ selectedStation.savingsPerLiter.toLocaleString('id-ID') }}/L dibanding rata-rata
         </strong>
       </div>
 
@@ -130,9 +130,9 @@ const createClusterMarker = (stations: StationResult[]) => {
   return L.marker([cheapest.latitude, cheapest.longitude], {
     icon: L.divIcon({
       html: `
-        <button class="gm-cluster" aria-label="${stations.length} nearby stations">
+        <button class="gm-cluster" aria-label="${stations.length} SPBU terdekat">
           <strong>${stations.length}</strong>
-          <span>from Rp ${activePrice(cheapest).toLocaleString('id-ID')}</span>
+          <span>mulai Rp ${activePrice(cheapest).toLocaleString('id-ID')}</span>
         </button>
       `,
       iconSize: [88, 48],

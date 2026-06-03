@@ -222,7 +222,7 @@ onMounted(() => {
             v-if="cheapestStation"
             class="absolute left-3 right-3 top-3 z-[700] max-w-[420px] rounded-[12px] bg-white/95 p-4 shadow-xl shadow-slate-950/15 backdrop-blur"
           >
-            <p class="text-xs font-black uppercase tracking-wide text-emerald-700">🔥 Best Deal Nearby</p>
+            <p class="text-xs font-black uppercase tracking-wide text-emerald-700">🔥 Penawaran Terbaik Terdekat</p>
             <div class="mt-2 flex items-start justify-between gap-3">
               <div class="min-w-0">
                 <h2 class="truncate text-lg font-black text-slate-950">{{ cheapestStation.name }}</h2>
@@ -230,7 +230,7 @@ onMounted(() => {
                   Rp{{ cheapestStation.selectedPrice.toLocaleString('id-ID') }}<span class="text-sm text-slate-500">/L</span>
                 </p>
                 <p class="mt-1 text-sm font-bold text-slate-600">
-                  {{ cheapestStation.distanceKm.toFixed(1) }} km away · Save Rp{{ cheapestStation.savingsPerLiter.toLocaleString('id-ID') }}/L
+                  {{ cheapestStation.distanceKm.toFixed(1) }} km dari sini · Hemat Rp{{ cheapestStation.savingsPerLiter.toLocaleString('id-ID') }}/L
                 </p>
               </div>
             </div>
@@ -241,7 +241,7 @@ onMounted(() => {
             >
               <i v-if="navigatingStationId === cheapestStation.id" class="fa-solid fa-spinner animate-spin" aria-hidden="true"></i>
               <i v-else class="fa-solid fa-route" aria-hidden="true"></i>
-              Start Navigation
+              Mulai Navigasi
             </button>
           </article>
           <Map

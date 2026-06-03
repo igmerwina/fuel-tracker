@@ -19,7 +19,7 @@ const emit = defineEmits<{
         </span>
         <span class="hidden min-w-0 sm:block">
           <span class="block truncate text-sm font-black leading-4 text-slate-950">Jakarta BBM</span>
-          <span class="block truncate text-xs font-semibold text-slate-500">Fuel price finder</span>
+          <span class="block truncate text-xs font-semibold text-slate-500">Pencari harga BBM</span>
         </span>
       </a>
 
@@ -38,11 +38,11 @@ const emit = defineEmits<{
 
       <div class="flex items-center justify-end gap-2">
         <div class="hidden rounded-xl bg-slate-100 px-3 py-2 text-right md:block">
-          <span class="block text-[11px] font-bold uppercase tracking-wide text-slate-500">Stations</span>
+          <span class="block text-[11px] font-bold uppercase tracking-wide text-slate-500">SPBU</span>
           <strong class="block text-sm font-black text-slate-950">{{ stationCount }}</strong>
         </div>
         <div class="rounded-xl bg-emerald-50 px-3 py-2 text-right">
-          <span class="block text-[11px] font-bold uppercase tracking-wide text-emerald-700">Updated</span>
+          <span class="block text-[11px] font-bold uppercase tracking-wide text-emerald-700">Diperbarui</span>
           <strong class="block whitespace-nowrap text-sm font-black text-emerald-900">{{ lastUpdated }}</strong>
         </div>
       </div>

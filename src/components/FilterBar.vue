@@ -27,7 +27,7 @@ const fuelLabel = (fuel: FuelType) => {
     <select
       :value="filters.fuelType"
       class="h-10 rounded-full bg-blue-600 px-4 text-sm font-black text-white outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-      aria-label="Fuel type"
+      aria-label="Jenis BBM"
       @change="emit('update-filters', { fuelType: ($event.target as HTMLSelectElement).value as FuelType })"
     >
       <option v-for="fuel in fuelTypes" :key="fuel.id" :value="fuel.id">{{ fuelLabel(fuel.id) }}</option>
@@ -36,10 +36,10 @@ const fuelLabel = (fuel: FuelType) => {
     <select
       :value="filters.brand"
       class="h-10 rounded-full bg-white px-4 text-sm font-black text-slate-700 shadow-sm ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-blue-600"
-      aria-label="Brand"
+      aria-label="Merek"
       @change="emit('update-filters', { brand: ($event.target as HTMLSelectElement).value as FuelBrand | '' })"
     >
-      <option value="">All brands</option>
+      <option value="">Semua merek</option>
       <option v-for="brand in brands" :key="brand" :value="brand">{{ brand }}</option>
     </select>
 
@@ -50,7 +50,7 @@ const fuelLabel = (fuel: FuelType) => {
       @click="emit('update-filters', { openNow: !filters.openNow })"
     >
       <i class="fa-regular fa-clock" aria-hidden="true"></i>
-      Open now
+      Buka sekarang
     </button>
 
     <button
@@ -59,7 +59,7 @@ const fuelLabel = (fuel: FuelType) => {
       @click="moreOpen = !moreOpen"
     >
       <i class="fa-solid fa-sliders" aria-hidden="true"></i>
-      More Filters
+      Filter lainnya
     </button>
 
     <button
@@ -68,7 +68,7 @@ const fuelLabel = (fuel: FuelType) => {
       :class="sortMode === 'cheapest' ? 'bg-slate-950 text-white' : 'bg-white text-slate-700 shadow-sm ring-1 ring-slate-200'"
       @click="emit('update-sort', sortMode === 'cheapest' ? 'nearest' : 'cheapest')"
     >
-      {{ sortMode === 'cheapest' ? 'Cheapest first' : 'Nearest first' }}
+      {{ sortMode === 'cheapest' ? 'Termurah dulu' : 'Terdekat dulu' }}
     </button>
   </section>
 
@@ -84,7 +84,7 @@ const fuelLabel = (fuel: FuelType) => {
         <option v-for="region in regions" :key="region" :value="region">{{ region }}</option>
       </select>
     </label>
-    <button class="h-10 self-end rounded-xl bg-slate-100 px-4 text-sm font-black text-slate-700" @click="emit('update-sort', 'cheapest')">Sort cheapest</button>
-    <button class="h-10 self-end rounded-xl bg-slate-100 px-4 text-sm font-black text-slate-700" @click="emit('update-sort', 'nearest')">Sort nearest</button>
+    <button class="h-10 self-end rounded-xl bg-slate-100 px-4 text-sm font-black text-slate-700" @click="emit('update-sort', 'cheapest')">Urutkan termurah</button>
+    <button class="h-10 self-end rounded-xl bg-slate-100 px-4 text-sm font-black text-slate-700" @click="emit('update-sort', 'nearest')">Urutkan terdekat</button>
   </section>
 </template>
