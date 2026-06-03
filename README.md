@@ -75,13 +75,13 @@ Development server berjalan di `http://localhost:5173/`
 
 ## Data
 
-**Catatan**: Semua data harga bahan bakar adalah dummy data untuk tujuan demonstrasi. Aplikasi ini menggunakan data mock yang hardcoded di `src/data/stations.ts`.
+**Catatan**: Data SPBU di `src/data/stations.ts` berasal dari `SPBU_DKI_Jakarta.csv`. Harga BBM tetap memakai nilai default per merek dan dapat ditimpa cache backend saat tersedia.
 
-### Data Sampel Mencakup:
-- 25 stasiun BBM di 5 wilayah Jakarta
+### Data Mencakup:
+- 115 SPBU di 5 wilayah Jakarta
 - 4 merek BBM dengan warna branding yang autentik
 - 6 jenis BBM (RON 90/92/95/98, Diesel CN 51/53)
-- Lokasi stasiun dengan koordinat geografis
+- Alamat dan link Google Maps dari CSV
 - Informasi alamat dan wilayah lengkap
 
 ## Styling & Warna
@@ -157,4 +157,3 @@ MIT
 ## Penulis
 
 Dibuat sebagai aplikasi demonstrasi pelacak BBM yang terinspirasi dari FuelWatch WA.
-

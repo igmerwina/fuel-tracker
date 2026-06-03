@@ -220,29 +220,32 @@ onMounted(() => {
         <div class="relative min-h-[calc(100vh-132px)] overflow-hidden rounded-[12px] bg-white shadow-lg shadow-slate-200/70 lg:min-h-0">
           <article
             v-if="cheapestStation"
-            class="absolute left-3 right-3 top-3 z-[700] max-w-[420px] rounded-[12px] bg-white/95 p-4 shadow-xl shadow-slate-950/15 backdrop-blur"
+            class="absolute left-3 right-3 top-3 z-[700] max-w-[360px] rounded-2xl bg-white/95 p-3 shadow-xl shadow-slate-950/12 ring-1 ring-white/70 backdrop-blur md:right-auto"
           >
-            <p class="text-xs font-black uppercase tracking-wide text-emerald-700">🔥 Penawaran Terbaik Terdekat</p>
-            <div class="mt-2 flex items-start justify-between gap-3">
+            <p class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-700">
+              <i class="fa-solid fa-fire-flame-curved" aria-hidden="true"></i>
+              Penawaran terbaik
+            </p>
+            <div class="mt-2 flex items-end justify-between gap-3">
               <div class="min-w-0">
-                <h2 class="truncate text-lg font-black text-slate-950">{{ cheapestStation.name }}</h2>
-                <p class="mt-1 text-3xl font-black tracking-tight text-slate-950">
+                <h2 class="truncate text-sm font-black text-slate-950">{{ cheapestStation.name }}</h2>
+                <p class="mt-0.5 text-2xl font-black tracking-tight text-slate-950">
                   Rp{{ cheapestStation.selectedPrice.toLocaleString('id-ID') }}<span class="text-sm text-slate-500">/L</span>
                 </p>
-                <p class="mt-1 text-sm font-bold text-slate-600">
+                <p class="mt-0.5 text-xs font-bold text-slate-500">
                   {{ cheapestStation.distanceKm.toFixed(1) }} km dari sini · Hemat Rp{{ cheapestStation.savingsPerLiter.toLocaleString('id-ID') }}/L
                 </p>
               </div>
+              <button
+                type="button"
+                class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                aria-label="Mulai navigasi"
+                @click="startNavigation(cheapestStation)"
+              >
+                <i v-if="navigatingStationId === cheapestStation.id" class="fa-solid fa-spinner animate-spin" aria-hidden="true"></i>
+                <i v-else class="fa-solid fa-route" aria-hidden="true"></i>
+              </button>
             </div>
-            <button
-              type="button"
-              class="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 text-sm font-black text-white shadow-lg shadow-blue-600/20 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-              @click="startNavigation(cheapestStation)"
-            >
-              <i v-if="navigatingStationId === cheapestStation.id" class="fa-solid fa-spinner animate-spin" aria-hidden="true"></i>
-              <i v-else class="fa-solid fa-route" aria-hidden="true"></i>
-              Mulai Navigasi
-            </button>
           </article>
           <Map
             ref="mapRef"

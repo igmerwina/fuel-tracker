@@ -1,0 +1,385 @@
+{
+  "generated_at": "2026-06-03T09:25:52Z",
+  "regions": [
+    "Jakarta Pusat",
+    "Jakarta Selatan",
+    "Jakarta Barat",
+    "Jakarta Timur",
+    "Jakarta Utara"
+  ],
+  "prices": [
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Pertalite",
+      "fuel_type": "RON_90",
+      "price": 10000,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T09:26:00Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Pertamax",
+      "fuel_type": "RON_92",
+      "price": 12300,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T09:26:00Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Pertamax Green 95",
+      "fuel_type": "RON_95",
+      "price": 12900,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T09:26:00Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Pertamax Turbo",
+      "fuel_type": "RON_98",
+      "price": 20750,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T09:26:00Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Pertamax Pertashop",
+      "fuel_type": "RON_92",
+      "price": 12200,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T09:26:00Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Pertamina Dex",
+      "fuel_type": "DIESEL_CN_53",
+      "price": 24800,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T09:26:00Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Dexlite",
+      "fuel_type": "DIESEL_CN_51",
+      "price": 23000,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T09:26:00Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Bio Solar Subsidi",
+      "fuel_type": "DIESEL_CN_51",
+      "price": 6800,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T09:26:00Z"
+    },
+    {
+      "brand": "Shell",
+      "fuel_name": "Shell V-Power Diesel",
+      "fuel_type": "DIESEL_CN_51",
+      "price": 24490,
+      "location": "DKI Jakarta",
+      "effective_at": "01 Juni 2026",
+      "source_url": "https://www.shell.co.id/in_id/pengendara-bermotor/bahan-bakar-shell/harga-bahan-bakar-shell.model.json",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T09:26:01Z"
+    },
+    {
+      "brand": "BP",
+      "fuel_name": "BP Ultimate",
+      "fuel_type": "RON_95",
+      "price": 12930,
+      "location": "Jabodetabek",
+      "effective_at": "1 Juni 2026",
+      "source_url": "https://www.bp.com/id_id/indonesia/home/produk-dan-layanan/spbu/harga.html",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T09:26:02Z"
+    },
+    {
+      "brand": "BP",
+      "fuel_name": "BP 92",
+      "fuel_type": "RON_92",
+      "price": 12390,
+      "location": "Jabodetabek",
+      "effective_at": "1 Juni 2026",
+      "source_url": "https://www.bp.com/id_id/indonesia/home/produk-dan-layanan/spbu/harga.html",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T09:26:02Z"
+    },
+    {
+      "brand": "BP",
+      "fuel_name": "BP Ultimate Diesel",
+      "fuel_type": "DIESEL_CN_51",
+      "price": 25060,
+      "location": "Jabodetabek",
+      "effective_at": "1 Juni 2026",
+      "source_url": "https://www.bp.com/id_id/indonesia/home/produk-dan-layanan/spbu/harga.html",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T09:26:02Z"
+    }
+  ],
+  "stations": [
+    {
+      "brand": "Vivo",
+      "name": "ANTASARI",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/u9ADAQoraWLzPXnH6",
+      "last_updated": "31-03-2026 16:08",
+      "status": {
+        "DIESEL": "HABIS",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "BINTARO S1",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/N24Ns8nCezwvzPyw9",
+      "last_updated": "31-03-2026 16:05",
+      "status": {
+        "DIESEL": "HABIS",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "CIDENG",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/4kSxLz2ie6dKDFMw6",
+      "last_updated": "31-03-2026 16:05",
+      "status": {
+        "DIESEL": "TIDAK DIJUAL",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "CILANDAK",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/LYaNoJrwcZViQdYD7",
+      "last_updated": "31-03-2026 16:00",
+      "status": {
+        "DIESEL": "HABIS",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "CILANGKAP",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/gAD8quzxkdi5GwTn7",
+      "last_updated": "31-03-2026 16:06",
+      "status": {
+        "DIESEL": "STOK MENIPIS",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "DAAN MOGOT",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/woa1N1ZTPdsrWPok7",
+      "last_updated": "31-03-2026 16:04",
+      "status": {
+        "DIESEL": "HABIS",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "HANKAM",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/daF8mDizwFPgJtK36",
+      "last_updated": "31-03-2026 16:10",
+      "status": {
+        "DIESEL": "TIDAK DIJUAL",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "JAMBORE",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://maps.app.goo.gl/UhvjECCdKrFTTTTX8",
+      "last_updated": "31-03-2026 16:10",
+      "status": {
+        "DIESEL": "HABIS",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "KEDOYA",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/NuCdcLjmMeGDdQpZA",
+      "last_updated": "31-03-2026 16:05",
+      "status": {
+        "DIESEL": "TIDAK DIJUAL",
+        "RON_92": "TERSEDIA",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "KEMANG",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/GjaKYAjonSKY4TeFA",
+      "last_updated": "31-03-2026 16:04",
+      "status": {
+        "DIESEL": "TIDAK DIJUAL",
+        "RON_92": "HABIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "MT HARYONO",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/3cGef32EkiCkF3AMA",
+      "last_updated": "31-03-2026 16:03",
+      "status": {
+        "DIESEL": "HABIS",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "MERUYA",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://maps.app.goo.gl/dygCuVG5ETHnCEiY8",
+      "last_updated": "31-03-2026 16:02",
+      "status": {
+        "DIESEL": "HABIS",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "PASAR MINGGU",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/wyMA8mnVtNvZyx919",
+      "last_updated": "31-03-2026 16:07",
+      "status": {
+        "DIESEL": "TIDAK DIJUAL",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "PEJATEN",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/qHD4xLHWynNQXV8a6",
+      "last_updated": "31-03-2026 16:12",
+      "status": {
+        "DIESEL": "TIDAK DIJUAL",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "RADAR AURI",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/qX2BMRWLsZSNrX8W7",
+      "last_updated": "31-03-2026 16:06",
+      "status": {
+        "DIESEL": "STOK MENIPIS",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "TENDEAN",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/9QBFka3g3FjvfX459",
+      "last_updated": "31-03-2026 16:01",
+      "status": {
+        "DIESEL": "TIDAK DIJUAL",
+        "RON_92": "HABIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    },
+    {
+      "brand": "Vivo",
+      "name": "WARUNG BUNCIT",
+      "area": "DKI Jakarta",
+      "google_maps_url": "https://goo.gl/maps/yNCoCvN1iFSDBYz98",
+      "last_updated": "31-03-2026 16:02",
+      "status": {
+        "DIESEL": "HABIS",
+        "RON_92": "STOK MENIPIS",
+        "RON_95": "HABIS"
+      },
+      "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
+      "scraped_at": "2026-06-03T09:26:03Z"
+    }
+  ],
+  "errors": []
+}
