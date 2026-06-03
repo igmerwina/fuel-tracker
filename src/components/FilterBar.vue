@@ -1,181 +1,113 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import type { FilterState, FuelBrand, FuelType, SortMode } from '../types';
+import { brands, fuelTypes, regions } from '../data/stations';
+
+const props = defineProps<{
+  filters: FilterState;
+  sortMode: SortMode;
+}>();
+
+const emit = defineEmits<{
+  'update-filters': [value: Partial<FilterState>];
+  'update-sort': [value: SortMode];
+}>();
+
+const advancedOpen = ref(false);
+
+const chipClass = (active: boolean) =>
+  [
+    'inline-flex min-h-10 items-center justify-center rounded-full px-4 text-sm font-black transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2',
+    active ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50',
+  ].join(' ');
+
+const fuelLabel = (fuel: FuelType) => {
+  if (fuel === 'RON_92') return 'Pertamax';
+  if (fuel === 'RON_90') return 'Pertalite';
+  return fuelTypes.find((item) => item.id === fuel)?.label ?? fuel;
+};
+</script>
+
 <template>
-  <section class="filter-bar">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Filter pencarian</p>
-        <h2>{{ resultCount }} SPBU cocok</h2>
-      </div>
-      <button class="reset-btn" type="button" title="Reset filter" @click="resetFilters">
-        <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
-        <span>Reset</span>
+  <section class="rounded-[12px] bg-white p-3 shadow-lg shadow-slate-200/70">
+    <div class="flex flex-wrap items-center gap-2">
+      <button
+        v-for="fuel in fuelTypes"
+        :key="fuel.id"
+        type="button"
+        :class="chipClass(filters.fuelType === fuel.id)"
+        @click="emit('update-filters', { fuelType: fuel.id })"
+      >
+        {{ fuelLabel(fuel.id) }}
+      </button>
+
+      <span class="mx-1 hidden h-8 w-px bg-slate-200 md:block"></span>
+
+      <button
+        v-for="brand in brands"
+        :key="brand"
+        type="button"
+        :class="chipClass(filters.brand === brand)"
+        @click="emit('update-filters', { brand: filters.brand === brand ? '' : (brand as FuelBrand) })"
+      >
+        {{ brand }}
+      </button>
+
+      <button
+        type="button"
+        :class="chipClass(filters.openNow)"
+        @click="emit('update-filters', { openNow: !filters.openNow })"
+      >
+        <i class="fa-regular fa-clock mr-2" aria-hidden="true"></i>
+        Open now
+      </button>
+
+      <button
+        type="button"
+        class="ml-auto inline-flex min-h-10 items-center gap-2 rounded-full bg-slate-100 px-4 text-sm font-black text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+        @click="advancedOpen = !advancedOpen"
+      >
+        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+        Filters
       </button>
     </div>
 
-    <div class="filters-grid">
-      <label class="filter-group" for="region">
-        <span>Wilayah</span>
-        <select id="region" v-model="filterState.region" @change="emitFilters">
+    <div class="mt-3 flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        :class="chipClass(sortMode === 'cheapest')"
+        @click="emit('update-sort', 'cheapest')"
+      >
+        Sort cheapest
+      </button>
+      <button
+        type="button"
+        :class="chipClass(sortMode === 'nearest')"
+        @click="emit('update-sort', 'nearest')"
+      >
+        Sort nearest
+      </button>
+      <button
+        type="button"
+        class="inline-flex min-h-10 items-center justify-center rounded-full px-4 text-sm font-black text-slate-500 hover:bg-slate-100"
+        @click="emit('update-filters', { query: '', region: '', brand: '', fuelType: 'RON_92', openNow: false })"
+      >
+        Reset
+      </button>
+    </div>
+
+    <div v-if="advancedOpen" class="mt-3 grid gap-2 border-t border-slate-100 pt-3 md:grid-cols-2">
+      <label class="grid gap-1 text-sm font-bold text-slate-600">
+        Wilayah
+        <select
+          :value="filters.region"
+          class="h-11 rounded-xl border-0 bg-slate-100 px-3 font-bold text-slate-950 outline-none ring-1 ring-slate-200 focus:ring-2 focus:ring-blue-600"
+          @change="emit('update-filters', { region: ($event.target as HTMLSelectElement).value as FilterState['region'] })"
+        >
           <option value="">Semua wilayah</option>
-          <option v-for="reg in regions" :key="reg" :value="reg">
-            {{ reg }}
-          </option>
-        </select>
-      </label>
-
-      <label class="filter-group" for="brand">
-        <span>Merek SPBU</span>
-        <select id="brand" v-model="filterState.brand" @change="emitFilters">
-          <option value="">Semua merek</option>
-          <option v-for="brand in brands" :key="brand" :value="brand">
-            {{ brand }}
-          </option>
-        </select>
-      </label>
-
-      <label class="filter-group full" for="fuelType">
-        <span>Jenis BBM</span>
-        <select id="fuelType" v-model="filterState.fuelType" @change="emitFilters">
-          <option value="">Semua jenis BBM</option>
-          <option v-for="fuel in fuelTypes" :key="fuel.id" :value="fuel.id">
-            {{ fuel.label }}
-          </option>
+          <option v-for="region in regions" :key="region" :value="region">{{ region }}</option>
         </select>
       </label>
     </div>
   </section>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import type { FilterState } from '../types/index';
-import { brands, fuelTypes, regions } from '../data/stations';
-
-defineProps<{
-  resultCount: number;
-}>();
-
-const filterState = ref<Pick<FilterState, 'region' | 'brand' | 'fuelType'>>({
-  region: '',
-  brand: '',
-  fuelType: '',
-});
-
-const emit = defineEmits<{
-  'update-filters': [value: Partial<FilterState>];
-}>();
-
-const emitFilters = () => {
-  emit('update-filters', { ...filterState.value });
-};
-
-const resetFilters = () => {
-  filterState.value = {
-    region: '',
-    brand: '',
-    fuelType: '',
-  };
-  emit('update-filters', { ...filterState.value, query: '' });
-};
-</script>
-
-<style scoped>
-.filter-bar {
-  flex: 0 0 auto;
-  padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--panel);
-  box-shadow: var(--small-shadow);
-}
-
-.section-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.eyebrow {
-  margin: 0;
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-h2 {
-  margin: 2px 0 0;
-  color: var(--ink);
-  font-size: 21px;
-  line-height: 1.15;
-}
-
-.filters-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.filter-group {
-  display: grid;
-  gap: 6px;
-  min-width: 0;
-}
-
-.filter-group.full {
-  grid-column: 1 / -1;
-}
-
-.filter-group span {
-  color: #334155;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-select {
-  width: 100%;
-  min-height: 42px;
-  padding: 0 36px 0 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  color: var(--ink);
-  background: #ffffff;
-  cursor: pointer;
-  outline: none;
-}
-
-select:hover {
-  border-color: #8aa4bd;
-}
-
-select:focus {
-  border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgba(11, 79, 122, 0.13);
-}
-
-.reset-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 38px;
-  padding: 0 12px;
-  border-radius: 8px;
-  color: var(--brand-strong);
-  background: #e7f0f7;
-  cursor: pointer;
-  font-weight: 800;
-}
-
-.reset-btn:hover {
-  background: #d7e8f4;
-}
-
-@media (max-width: 430px) {
-  .filters-grid {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

@@ -1,347 +1,132 @@
-<template>
-  <section class="stations-list">
-    <div class="list-heading">
-      <div>
-        <p class="eyebrow">Daftar SPBU</p>
-        <h2>Harga tersedia per liter</h2>
-      </div>
-      <span class="count">{{ stations.length }}</span>
-    </div>
-
-    <div v-if="stations.length === 0" class="empty-state">
-      <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
-      <p>Tidak ada SPBU yang sesuai filter.</p>
-    </div>
-
-    <div v-else class="list-container">
-      <article v-for="station in stations" :key="station.id" class="station-item">
-        <div class="station-top">
-          <span class="brand-badge" :class="station.brand.toLowerCase()">
-            {{ station.brand }}
-          </span>
-          <span class="region">{{ station.region }}</span>
-        </div>
-
-        <h3>{{ station.name }}</h3>
-        <p class="address">
-          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-          {{ station.address }}
-        </p>
-
-        <div class="prices-info">
-          <div
-            v-for="price in visiblePrices(station)"
-            :key="price.type"
-            class="price-item"
-            :class="{ highlighted: filters.fuelType === price.type }"
-          >
-            <span class="fuel-type">{{ getFuelTypeLabel(price.type) }}</span>
-            <strong>Rp {{ price.price.toLocaleString('id-ID') }}</strong>
-          </div>
-        </div>
-
-        <footer class="card-footer">
-          <span>Update {{ formatUpdated(station.lastUpdated) }}</span>
-          <div class="actions">
-            <a
-              class="maps-btn"
-              :href="station.googleMapsUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-              <span>Google Maps</span>
-            </a>
-            <button class="view-map-btn" type="button" @click="$emit('flyto', station)">
-              <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
-              <span>Lihat di Peta</span>
-            </button>
-          </div>
-        </footer>
-      </article>
-    </div>
-  </section>
-</template>
-
 <script setup lang="ts">
-import type { FilterState, FuelPrice, FuelStation } from '../types/index';
+import type { FuelType, SortMode, StationResult } from '../types';
 import { fuelTypes } from '../data/stations';
 
-const props = defineProps<{
-  stations: FuelStation[];
-  filters: FilterState;
+defineProps<{
+  stations: StationResult[];
+  activeFuel: FuelType;
+  sortMode: SortMode;
 }>();
 
-defineEmits<{
-  flyto: [station: FuelStation];
+const emit = defineEmits<{
+  flyto: [station: StationResult];
+  'toggle-favorite': [stationId: string];
 }>();
 
-const getFuelTypeLabel = (typeId: string): string => {
-  const fuelType = fuelTypes.find((fuel) => fuel.id === typeId);
-  return fuelType?.label || typeId;
-};
+const fuelLabel = (type: string) => fuelTypes.find((fuel) => fuel.id === type)?.label ?? type;
 
-const visiblePrices = (station: FuelStation): FuelPrice[] => {
-  if (!props.filters.fuelType) return station.prices;
-  return station.prices.filter((price) => price.type === props.filters.fuelType);
-};
+const visiblePriceTypes: FuelType[] = ['RON_90', 'RON_92', 'RON_95'];
 
-const formatUpdated = (value: string): string => {
-  return new Intl.DateTimeFormat('id-ID', {
-    day: '2-digit',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(value));
+const brandTone: Record<string, string> = {
+  Pertamina: 'bg-red-50 text-red-700',
+  Shell: 'bg-amber-50 text-amber-700',
+  Vivo: 'bg-blue-50 text-blue-700',
+  BP: 'bg-emerald-50 text-emerald-700',
 };
 </script>
 
-<style scoped>
-.stations-list {
-  display: flex;
-  min-height: 0;
-  flex: 1;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--panel);
-  box-shadow: var(--small-shadow);
-}
+<template>
+  <aside
+    class="fixed inset-x-0 bottom-0 z-[900] max-h-[48vh] overflow-hidden rounded-t-[24px] bg-white shadow-2xl shadow-slate-950/20 lg:static lg:z-auto lg:max-h-none lg:rounded-[12px] lg:shadow-xl lg:shadow-slate-200/80"
+    aria-label="Station results"
+  >
+    <div class="mx-auto mt-2 h-1.5 w-12 rounded-full bg-slate-300 lg:hidden"></div>
 
-.list-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 15px 16px;
-  border-bottom: 1px solid var(--line);
-}
+    <div class="flex items-center justify-between gap-3 border-b border-slate-100 p-4">
+      <div>
+        <p class="text-xs font-black uppercase tracking-wide text-slate-500">
+          {{ sortMode === 'nearest' ? 'Nearest stations' : 'Cheapest stations' }}
+        </p>
+        <h2 class="text-xl font-black tracking-tight text-slate-950">{{ stations.length }} results</h2>
+      </div>
+      <span class="rounded-full bg-blue-50 px-3 py-1 text-sm font-black text-blue-700">
+        {{ fuelLabel(activeFuel) }}
+      </span>
+    </div>
 
-.eyebrow {
-  margin: 0;
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
+    <div v-if="stations.length === 0" class="grid min-h-72 place-items-center p-8 text-center">
+      <div>
+        <i class="fa-solid fa-map-location-dot text-3xl text-slate-300" aria-hidden="true"></i>
+        <p class="mt-3 font-bold text-slate-600">No stations match your search.</p>
+      </div>
+    </div>
 
-h2 {
-  margin: 2px 0 0;
-  color: var(--ink);
-  font-size: 18px;
-  line-height: 1.2;
-}
+    <div v-else class="max-h-[calc(48vh-76px)] space-y-3 overflow-y-auto p-3 lg:max-h-[calc(100vh-292px)]">
+      <article
+        v-for="station in stations"
+        :key="station.id"
+        class="rounded-[12px] bg-white p-4 shadow-md shadow-slate-200/80 ring-1 transition hover:shadow-lg"
+        :class="station.isCheapest ? 'ring-emerald-300' : 'ring-slate-100'"
+      >
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <div class="mb-2 flex flex-wrap items-center gap-2">
+              <span class="rounded-full px-2.5 py-1 text-xs font-black" :class="brandTone[station.brand]">
+                {{ station.brand }}
+              </span>
+              <span v-if="station.isCheapest" class="rounded-full bg-emerald-500 px-2.5 py-1 text-xs font-black text-white">
+                Cheapest
+              </span>
+              <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-black text-slate-600">
+                Open now
+              </span>
+            </div>
+            <h3 class="truncate text-lg font-black leading-6 text-slate-950">{{ station.name }}</h3>
+            <p class="mt-1 line-clamp-2 text-sm font-semibold text-slate-500">{{ station.address }}</p>
+          </div>
 
-.count {
-  display: grid;
-  width: 38px;
-  height: 38px;
-  place-items: center;
-  border-radius: 8px;
-  color: var(--brand-strong);
-  background: #ffed9c;
-  font-weight: 900;
-}
+          <button
+            type="button"
+            class="grid h-10 w-10 flex-none place-items-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-rose-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            :aria-label="station.isFavorite ? 'Remove favorite' : 'Save favorite'"
+            @click="emit('toggle-favorite', station.id)"
+          >
+            <i :class="station.isFavorite ? 'fa-solid fa-heart text-rose-500' : 'fa-regular fa-heart'" aria-hidden="true"></i>
+          </button>
+        </div>
 
-.empty-state {
-  display: grid;
-  flex: 1;
-  place-items: center;
-  padding: 32px;
-  color: var(--muted);
-  text-align: center;
-}
+        <div class="mt-3 flex items-center gap-3 text-sm font-bold text-slate-600">
+          <span><i class="fa-solid fa-location-arrow mr-1 text-blue-600" aria-hidden="true"></i>{{ station.distanceKm.toFixed(1) }} km</span>
+          <span>{{ station.travelMinutes }} min</span>
+          <span v-if="station.savingsPerLiter > 0" class="text-emerald-700">
+            Save Rp {{ station.savingsPerLiter.toLocaleString('id-ID') }}/L
+          </span>
+        </div>
 
-.empty-state i {
-  margin-bottom: 12px;
-  color: var(--brand);
-  font-size: 30px;
-}
+        <div class="mt-4 grid grid-cols-3 gap-2">
+          <div
+            v-for="type in visiblePriceTypes"
+            :key="type"
+            class="rounded-xl p-3"
+            :class="activeFuel === type ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'"
+          >
+            <p class="text-[11px] font-black uppercase">{{ fuelLabel(type) }}</p>
+            <p class="mt-1 text-sm font-black">
+              Rp {{ station.prices.find((price) => price.type === type)?.price.toLocaleString('id-ID') ?? '-' }}
+            </p>
+          </div>
+        </div>
 
-.empty-state p {
-  margin: 0;
-}
-
-.list-container {
-  display: flex;
-  flex: 1;
-  min-height: 0;
-  flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
-  padding: 14px;
-}
-
-.station-item {
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-left: 5px solid var(--brand);
-  border-radius: 8px;
-  background: #ffffff;
-}
-
-.station-item:hover {
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.09);
-}
-
-.station-top,
-.card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.brand-badge {
-  display: inline-flex;
-  min-height: 25px;
-  align-items: center;
-  padding: 0 9px;
-  border-radius: 999px;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: 900;
-}
-
-.brand-badge.pertamina {
-  background: #d71e2b;
-}
-
-.brand-badge.shell {
-  color: #1f2937;
-  background: #f4c300;
-}
-
-.brand-badge.vivo {
-  background: #1d4ed8;
-}
-
-.brand-badge.bp {
-  background: #159447;
-}
-
-.region {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-h3 {
-  margin: 10px 0 6px;
-  color: var(--ink);
-  font-size: 17px;
-  line-height: 1.2;
-}
-
-.address {
-  display: flex;
-  gap: 7px;
-  margin: 0;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.prices-info {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin: 13px 0;
-}
-
-.price-item {
-  display: grid;
-  gap: 1px;
-  min-width: 0;
-  padding: 9px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background: var(--panel-soft);
-}
-
-.price-item.highlighted {
-  border-color: #f4c300;
-  background: #fff8d9;
-}
-
-.fuel-type {
-  overflow: hidden;
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 900;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.price-item strong {
-  color: var(--brand-strong);
-  font-size: 14px;
-  line-height: 1.2;
-}
-
-.card-footer {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.actions {
-  display: inline-flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.maps-btn,
-.view-map-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  min-height: 36px;
-  padding: 0 12px;
-  border-radius: 8px;
-  color: #ffffff;
-  background: var(--brand);
-  cursor: pointer;
-  font-weight: 900;
-  text-decoration: none;
-}
-
-.view-map-btn:hover {
-  background: var(--brand-strong);
-}
-
-.maps-btn {
-  color: var(--brand-strong);
-  background: #e7f0f7;
-}
-
-.maps-btn:hover {
-  background: #d7e8f4;
-}
-
-@media (max-width: 1180px) {
-  .prices-info {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 430px) {
-  .prices-info {
-    grid-template-columns: 1fr;
-  }
-
-  .card-footer {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .actions,
-  .maps-btn,
-  .view-map-btn {
-    width: 100%;
-  }
-}
-</style>
+        <div class="mt-4 grid grid-cols-2 gap-2">
+          <a
+            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 text-sm font-black text-white shadow-lg shadow-blue-600/20 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+            :href="station.googleMapsUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i class="fa-solid fa-route" aria-hidden="true"></i>
+            Directions
+          </a>
+          <button
+            type="button"
+            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 text-sm font-black text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+            @click="emit('flyto', station)"
+          >
+            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+            Details
+          </button>
+        </div>
+      </article>
+    </div>
+  </aside>
+</template>

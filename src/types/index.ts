@@ -1,6 +1,7 @@
 export type FuelBrand = 'Pertamina' | 'Shell' | 'Vivo' | 'BP';
 export type FuelType = 'RON_90' | 'RON_92' | 'RON_95' | 'RON_98' | 'DIESEL_CN_51' | 'DIESEL_CN_53';
 export type Region = 'Jakarta Pusat' | 'Jakarta Selatan' | 'Jakarta Barat' | 'Jakarta Timur' | 'Jakarta Utara';
+export type SortMode = 'cheapest' | 'nearest';
 
 export interface FuelPrice {
   type: FuelType;
@@ -25,4 +26,15 @@ export interface FilterState {
   region: Region | '';
   brand: FuelBrand | '';
   fuelType: FuelType | '';
+  openNow: boolean;
+}
+
+export interface StationResult extends FuelStation {
+  distanceKm: number;
+  travelMinutes: number;
+  selectedPrice: number;
+  averagePrice: number;
+  savingsPerLiter: number;
+  isCheapest: boolean;
+  isFavorite: boolean;
 }
