@@ -13,13 +13,7 @@ const emit = defineEmits<{
   'update-sort': [value: SortMode];
 }>();
 
-const advancedOpen = ref(false);
-
-const chipClass = (active: boolean) =>
-  [
-    'inline-flex min-h-10 items-center justify-center rounded-full px-4 text-sm font-black transition focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2',
-    active ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50',
-  ].join(' ');
+const moreOpen = ref(false);
 
 const fuelLabel = (fuel: FuelType) => {
   if (fuel === 'RON_92') return 'Pertamax';
@@ -29,85 +23,68 @@ const fuelLabel = (fuel: FuelType) => {
 </script>
 
 <template>
-  <section class="rounded-[12px] bg-white p-3 shadow-lg shadow-slate-200/70">
-    <div class="flex flex-wrap items-center gap-2">
-      <button
-        v-for="fuel in fuelTypes"
-        :key="fuel.id"
-        type="button"
-        :class="chipClass(filters.fuelType === fuel.id)"
-        @click="emit('update-filters', { fuelType: fuel.id })"
-      >
-        {{ fuelLabel(fuel.id) }}
-      </button>
+  <section class="flex items-center gap-2 overflow-x-auto rounded-[12px] bg-white/95 px-3 py-2 shadow-sm shadow-slate-200/70">
+    <select
+      :value="filters.fuelType"
+      class="h-10 rounded-full bg-blue-600 px-4 text-sm font-black text-white outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+      aria-label="Fuel type"
+      @change="emit('update-filters', { fuelType: ($event.target as HTMLSelectElement).value as FuelType })"
+    >
+      <option v-for="fuel in fuelTypes" :key="fuel.id" :value="fuel.id">{{ fuelLabel(fuel.id) }}</option>
+    </select>
 
-      <span class="mx-1 hidden h-8 w-px bg-slate-200 md:block"></span>
+    <select
+      :value="filters.brand"
+      class="h-10 rounded-full bg-white px-4 text-sm font-black text-slate-700 shadow-sm ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-blue-600"
+      aria-label="Brand"
+      @change="emit('update-filters', { brand: ($event.target as HTMLSelectElement).value as FuelBrand | '' })"
+    >
+      <option value="">All brands</option>
+      <option v-for="brand in brands" :key="brand" :value="brand">{{ brand }}</option>
+    </select>
 
-      <button
-        v-for="brand in brands"
-        :key="brand"
-        type="button"
-        :class="chipClass(filters.brand === brand)"
-        @click="emit('update-filters', { brand: filters.brand === brand ? '' : (brand as FuelBrand) })"
-      >
-        {{ brand }}
-      </button>
+    <button
+      type="button"
+      class="inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-black shadow-sm ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600"
+      :class="filters.openNow ? 'bg-emerald-500 text-white ring-emerald-500' : 'bg-white text-slate-700'"
+      @click="emit('update-filters', { openNow: !filters.openNow })"
+    >
+      <i class="fa-regular fa-clock" aria-hidden="true"></i>
+      Open now
+    </button>
 
-      <button
-        type="button"
-        :class="chipClass(filters.openNow)"
-        @click="emit('update-filters', { openNow: !filters.openNow })"
-      >
-        <i class="fa-regular fa-clock mr-2" aria-hidden="true"></i>
-        Open now
-      </button>
+    <button
+      type="button"
+      class="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-white px-4 text-sm font-black text-slate-700 shadow-sm ring-1 ring-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600"
+      @click="moreOpen = !moreOpen"
+    >
+      <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+      More Filters
+    </button>
 
-      <button
-        type="button"
-        class="ml-auto inline-flex min-h-10 items-center gap-2 rounded-full bg-slate-100 px-4 text-sm font-black text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-        @click="advancedOpen = !advancedOpen"
-      >
-        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
-        Filters
-      </button>
-    </div>
+    <button
+      type="button"
+      class="ml-auto hidden h-10 shrink-0 rounded-full px-4 text-sm font-black md:inline-flex md:items-center"
+      :class="sortMode === 'cheapest' ? 'bg-slate-950 text-white' : 'bg-white text-slate-700 shadow-sm ring-1 ring-slate-200'"
+      @click="emit('update-sort', sortMode === 'cheapest' ? 'nearest' : 'cheapest')"
+    >
+      {{ sortMode === 'cheapest' ? 'Cheapest first' : 'Nearest first' }}
+    </button>
+  </section>
 
-    <div class="mt-3 flex flex-wrap items-center gap-2">
-      <button
-        type="button"
-        :class="chipClass(sortMode === 'cheapest')"
-        @click="emit('update-sort', 'cheapest')"
+  <section v-if="moreOpen" class="grid gap-2 rounded-[12px] bg-white p-3 shadow-sm md:grid-cols-3">
+    <label class="grid gap-1 text-sm font-bold text-slate-600">
+      Wilayah
+      <select
+        :value="filters.region"
+        class="h-10 rounded-xl bg-slate-100 px-3 font-bold text-slate-950 outline-none focus:ring-2 focus:ring-blue-600"
+        @change="emit('update-filters', { region: ($event.target as HTMLSelectElement).value as FilterState['region'] })"
       >
-        Sort cheapest
-      </button>
-      <button
-        type="button"
-        :class="chipClass(sortMode === 'nearest')"
-        @click="emit('update-sort', 'nearest')"
-      >
-        Sort nearest
-      </button>
-      <button
-        type="button"
-        class="inline-flex min-h-10 items-center justify-center rounded-full px-4 text-sm font-black text-slate-500 hover:bg-slate-100"
-        @click="emit('update-filters', { query: '', region: '', brand: '', fuelType: 'RON_92', openNow: false })"
-      >
-        Reset
-      </button>
-    </div>
-
-    <div v-if="advancedOpen" class="mt-3 grid gap-2 border-t border-slate-100 pt-3 md:grid-cols-2">
-      <label class="grid gap-1 text-sm font-bold text-slate-600">
-        Wilayah
-        <select
-          :value="filters.region"
-          class="h-11 rounded-xl border-0 bg-slate-100 px-3 font-bold text-slate-950 outline-none ring-1 ring-slate-200 focus:ring-2 focus:ring-blue-600"
-          @change="emit('update-filters', { region: ($event.target as HTMLSelectElement).value as FilterState['region'] })"
-        >
-          <option value="">Semua wilayah</option>
-          <option v-for="region in regions" :key="region" :value="region">{{ region }}</option>
-        </select>
-      </label>
-    </div>
+        <option value="">Semua wilayah</option>
+        <option v-for="region in regions" :key="region" :value="region">{{ region }}</option>
+      </select>
+    </label>
+    <button class="h-10 self-end rounded-xl bg-slate-100 px-4 text-sm font-black text-slate-700" @click="emit('update-sort', 'cheapest')">Sort cheapest</button>
+    <button class="h-10 self-end rounded-xl bg-slate-100 px-4 text-sm font-black text-slate-700" @click="emit('update-sort', 'nearest')">Sort nearest</button>
   </section>
 </template>

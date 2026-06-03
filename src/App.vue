@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import Header from './components/Header.vue';
-import HeroSummary from './components/HeroSummary.vue';
 import FilterBar from './components/FilterBar.vue';
 import StationList from './components/StationList.vue';
 import Map from './components/Map.vue';
@@ -19,6 +18,8 @@ import { fetchRealtimePrices } from './services/prices';
 const stations = ref<FuelStation[]>(fuelStations);
 const favoriteIds = ref<string[]>([]);
 const sortMode = ref<SortMode>('cheapest');
+const selectedStationId = ref<string>('');
+const navigatingStationId = ref<string>('');
 const filterState = ref<FilterState>({
   query: '',
   region: '',
@@ -37,11 +38,6 @@ const fuelAliases: Record<string, string[]> = {
   DIESEL_CN_51: ['diesel cn 51', 'dexlite', 'v-power diesel'],
   DIESEL_CN_53: ['diesel cn 53', 'pertamina dex'],
 };
-
-const fuelDisplayName = computed(() => {
-  if (filterState.value.fuelType === 'RON_92') return 'Pertamax';
-  return fuelTypes.find((fuel) => fuel.id === filterState.value.fuelType)?.label ?? 'BBM';
-});
 
 const distanceKm = (station: FuelStation) => {
   const toRad = (value: number) => (value * Math.PI) / 180;
@@ -125,7 +121,6 @@ const stationResults = computed<StationResult[]>(() => {
 });
 
 const cheapestStation = computed(() => stationResults.value.find((station) => station.isCheapest));
-const nearestStation = computed(() => [...stationResults.value].sort((a, b) => a.distanceKm - b.distanceKm)[0]);
 
 const lastUpdated = computed(() => {
   const latest = stations.value
@@ -151,7 +146,20 @@ const updateQuery = (query: string) => {
 };
 
 const handleFlyTo = (station: StationResult) => {
+  selectedStationId.value = station.id;
   mapRef.value?.flyToStation(station);
+};
+
+const selectStation = (station: StationResult) => {
+  selectedStationId.value = station.id;
+};
+
+const startNavigation = (station: StationResult) => {
+  navigatingStationId.value = station.id;
+  window.setTimeout(() => {
+    window.open(station.googleMapsUrl, '_blank', 'noopener,noreferrer');
+    navigatingStationId.value = '';
+  }, 450);
 };
 
 const toggleFavorite = (stationId: string) => {
@@ -185,6 +193,8 @@ const applyRealtimePrices = async () => {
 
 onMounted(() => {
   favoriteIds.value = JSON.parse(localStorage.getItem('favoriteStations') || '[]') as string[];
+  document.documentElement.classList.remove('dark');
+  localStorage.removeItem('darkMode');
   void applyRealtimePrices();
 });
 </script>
@@ -198,14 +208,7 @@ onMounted(() => {
       @update-query="updateQuery"
     />
 
-    <main class="mx-auto flex h-[calc(100vh-72px)] max-w-[1800px] flex-col gap-4 p-3 md:p-4">
-      <HeroSummary
-        :fuel-name="fuelDisplayName"
-        :cheapest-station="cheapestStation"
-        :nearest-station="nearestStation"
-        :last-updated="relativeUpdated"
-      />
-
+    <main class="mx-auto flex h-[calc(100vh-72px)] max-w-[1800px] flex-col gap-3 p-2 md:p-3">
       <FilterBar
         :filters="filterState"
         :sort-mode="sortMode"
@@ -213,13 +216,41 @@ onMounted(() => {
         @update-sort="sortMode = $event"
       />
 
-      <section class="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,7fr)_minmax(360px,3fr)]">
-        <div class="min-h-[520px] overflow-hidden rounded-[12px] bg-white shadow-xl shadow-slate-200/80 lg:min-h-0">
+      <section class="grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-[minmax(0,3fr)_minmax(320px,1fr)]">
+        <div class="relative min-h-[calc(100vh-132px)] overflow-hidden rounded-[12px] bg-white shadow-lg shadow-slate-200/70 lg:min-h-0">
+          <article
+            v-if="cheapestStation"
+            class="absolute left-3 right-3 top-3 z-[700] max-w-[420px] rounded-[12px] bg-white/95 p-4 shadow-xl shadow-slate-950/15 backdrop-blur"
+          >
+            <p class="text-xs font-black uppercase tracking-wide text-emerald-700">🔥 Best Deal Nearby</p>
+            <div class="mt-2 flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <h2 class="truncate text-lg font-black text-slate-950">{{ cheapestStation.name }}</h2>
+                <p class="mt-1 text-3xl font-black tracking-tight text-slate-950">
+                  Rp{{ cheapestStation.selectedPrice.toLocaleString('id-ID') }}<span class="text-sm text-slate-500">/L</span>
+                </p>
+                <p class="mt-1 text-sm font-bold text-slate-600">
+                  {{ cheapestStation.distanceKm.toFixed(1) }} km away · Save Rp{{ cheapestStation.savingsPerLiter.toLocaleString('id-ID') }}/L
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 text-sm font-black text-white shadow-lg shadow-blue-600/20 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              @click="startNavigation(cheapestStation)"
+            >
+              <i v-if="navigatingStationId === cheapestStation.id" class="fa-solid fa-spinner animate-spin" aria-hidden="true"></i>
+              <i v-else class="fa-solid fa-route" aria-hidden="true"></i>
+              Start Navigation
+            </button>
+          </article>
           <Map
             ref="mapRef"
             :stations="stationResults"
             :active-fuel="filterState.fuelType || 'RON_92'"
             :average-price="averageSelectedPrice"
+            :selected-station-id="selectedStationId"
+            @select-station="selectStation"
           />
         </div>
 
@@ -227,8 +258,10 @@ onMounted(() => {
           :stations="stationResults"
           :active-fuel="filterState.fuelType || 'RON_92'"
           :sort-mode="sortMode"
+          :selected-station-id="selectedStationId"
           @flyto="handleFlyTo"
           @toggle-favorite="toggleFavorite"
+          @start-navigation="startNavigation"
         />
       </section>
     </main>

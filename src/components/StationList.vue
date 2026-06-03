@@ -1,132 +1,91 @@
 <script setup lang="ts">
 import type { FuelType, SortMode, StationResult } from '../types';
-import { fuelTypes } from '../data/stations';
 
 defineProps<{
   stations: StationResult[];
   activeFuel: FuelType;
   sortMode: SortMode;
+  selectedStationId: string;
 }>();
 
 const emit = defineEmits<{
   flyto: [station: StationResult];
   'toggle-favorite': [stationId: string];
+  'start-navigation': [station: StationResult];
 }>();
 
-const fuelLabel = (type: string) => fuelTypes.find((fuel) => fuel.id === type)?.label ?? type;
-
-const visiblePriceTypes: FuelType[] = ['RON_90', 'RON_92', 'RON_95'];
-
-const brandTone: Record<string, string> = {
-  Pertamina: 'bg-red-50 text-red-700',
-  Shell: 'bg-amber-50 text-amber-700',
-  Vivo: 'bg-blue-50 text-blue-700',
-  BP: 'bg-emerald-50 text-emerald-700',
-};
+const price = (station: StationResult, type: FuelType) =>
+  station.prices.find((item) => item.type === type)?.price.toLocaleString('id-ID') ?? '-';
 </script>
 
 <template>
   <aside
-    class="fixed inset-x-0 bottom-0 z-[900] max-h-[48vh] overflow-hidden rounded-t-[24px] bg-white shadow-2xl shadow-slate-950/20 lg:static lg:z-auto lg:max-h-none lg:rounded-[12px] lg:shadow-xl lg:shadow-slate-200/80"
+    class="fixed inset-x-0 bottom-0 z-[900] max-h-[42vh] overflow-hidden rounded-t-[20px] bg-white shadow-2xl shadow-slate-950/20 lg:static lg:max-h-none lg:rounded-[12px] lg:shadow-sm"
     aria-label="Station results"
   >
     <div class="mx-auto mt-2 h-1.5 w-12 rounded-full bg-slate-300 lg:hidden"></div>
 
-    <div class="flex items-center justify-between gap-3 border-b border-slate-100 p-4">
+    <div class="flex h-14 items-center justify-between px-3">
       <div>
-        <p class="text-xs font-black uppercase tracking-wide text-slate-500">
-          {{ sortMode === 'nearest' ? 'Nearest stations' : 'Cheapest stations' }}
+        <p class="text-[11px] font-black uppercase tracking-wide text-slate-500">
+          {{ sortMode === 'nearest' ? 'Nearest' : 'Best prices' }}
         </p>
-        <h2 class="text-xl font-black tracking-tight text-slate-950">{{ stations.length }} results</h2>
-      </div>
-      <span class="rounded-full bg-blue-50 px-3 py-1 text-sm font-black text-blue-700">
-        {{ fuelLabel(activeFuel) }}
-      </span>
-    </div>
-
-    <div v-if="stations.length === 0" class="grid min-h-72 place-items-center p-8 text-center">
-      <div>
-        <i class="fa-solid fa-map-location-dot text-3xl text-slate-300" aria-hidden="true"></i>
-        <p class="mt-3 font-bold text-slate-600">No stations match your search.</p>
+        <h2 class="text-base font-black text-slate-950">{{ stations.length }} stations</h2>
       </div>
     </div>
 
-    <div v-else class="max-h-[calc(48vh-76px)] space-y-3 overflow-y-auto p-3 lg:max-h-[calc(100vh-292px)]">
-      <article
+    <div class="max-h-[calc(42vh-64px)] overflow-y-auto px-2 pb-3 lg:max-h-[calc(100vh-150px)]">
+      <button
         v-for="station in stations"
         :key="station.id"
-        class="rounded-[12px] bg-white p-4 shadow-md shadow-slate-200/80 ring-1 transition hover:shadow-lg"
-        :class="station.isCheapest ? 'ring-emerald-300' : 'ring-slate-100'"
+        type="button"
+        class="mb-2 grid min-h-[112px] w-full rounded-[12px] bg-white p-3 text-left shadow-sm ring-1 transition hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+        :class="selectedStationId === station.id ? 'ring-blue-500' : station.isCheapest ? 'ring-emerald-300' : 'ring-slate-100'"
+        @click="emit('flyto', station)"
       >
-        <div class="flex items-start justify-between gap-3">
+        <div class="flex items-start justify-between gap-2">
           <div class="min-w-0">
-            <div class="mb-2 flex flex-wrap items-center gap-2">
-              <span class="rounded-full px-2.5 py-1 text-xs font-black" :class="brandTone[station.brand]">
-                {{ station.brand }}
-              </span>
-              <span v-if="station.isCheapest" class="rounded-full bg-emerald-500 px-2.5 py-1 text-xs font-black text-white">
-                Cheapest
-              </span>
-              <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-black text-slate-600">
-                Open now
-              </span>
+            <div class="flex items-center gap-2">
+              <h3 class="truncate text-sm font-black text-slate-950">{{ station.name }}</h3>
+              <span v-if="station.isCheapest" class="shrink-0 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-black text-white">Best</span>
             </div>
-            <h3 class="truncate text-lg font-black leading-6 text-slate-950">{{ station.name }}</h3>
-            <p class="mt-1 line-clamp-2 text-sm font-semibold text-slate-500">{{ station.address }}</p>
+            <p class="mt-0.5 text-xs font-bold text-slate-500">
+              {{ station.distanceKm.toFixed(1) }} km · Save Rp{{ station.savingsPerLiter.toLocaleString('id-ID') }}/L
+            </p>
           </div>
-
           <button
             type="button"
-            class="grid h-10 w-10 flex-none place-items-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-rose-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-rose-500"
             :aria-label="station.isFavorite ? 'Remove favorite' : 'Save favorite'"
-            @click="emit('toggle-favorite', station.id)"
+            @click.stop="emit('toggle-favorite', station.id)"
           >
             <i :class="station.isFavorite ? 'fa-solid fa-heart text-rose-500' : 'fa-regular fa-heart'" aria-hidden="true"></i>
           </button>
         </div>
 
-        <div class="mt-3 flex items-center gap-3 text-sm font-bold text-slate-600">
-          <span><i class="fa-solid fa-location-arrow mr-1 text-blue-600" aria-hidden="true"></i>{{ station.distanceKm.toFixed(1) }} km</span>
-          <span>{{ station.travelMinutes }} min</span>
-          <span v-if="station.savingsPerLiter > 0" class="text-emerald-700">
-            Save Rp {{ station.savingsPerLiter.toLocaleString('id-ID') }}/L
-          </span>
+        <div class="mt-2 grid grid-cols-3 gap-2 text-xs">
+          <span><b>RON90</b> Rp{{ price(station, 'RON_90') }}</span>
+          <span class="font-black text-blue-700"><b>RON92</b> Rp{{ price(station, 'RON_92') }}</span>
+          <span><b>RON95</b> Rp{{ price(station, 'RON_95') }}</span>
         </div>
 
-        <div class="mt-4 grid grid-cols-3 gap-2">
-          <div
-            v-for="type in visiblePriceTypes"
-            :key="type"
-            class="rounded-xl p-3"
-            :class="activeFuel === type ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'"
-          >
-            <p class="text-[11px] font-black uppercase">{{ fuelLabel(type) }}</p>
-            <p class="mt-1 text-sm font-black">
-              Rp {{ station.prices.find((price) => price.type === type)?.price.toLocaleString('id-ID') ?? '-' }}
-            </p>
-          </div>
-        </div>
-
-        <div class="mt-4 grid grid-cols-2 gap-2">
-          <a
-            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 text-sm font-black text-white shadow-lg shadow-blue-600/20 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-            :href="station.googleMapsUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <i class="fa-solid fa-route" aria-hidden="true"></i>
-            Directions
-          </a>
+        <div class="mt-2 flex gap-2">
           <button
             type="button"
-            class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 text-sm font-black text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-            @click="emit('flyto', station)"
+            class="h-8 flex-1 rounded-lg bg-blue-600 text-xs font-black text-white"
+            @click.stop="emit('start-navigation', station)"
           >
-            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+            Directions
+          </button>
+          <button
+            type="button"
+            class="h-8 flex-1 rounded-lg bg-slate-100 text-xs font-black text-slate-700"
+            @click.stop="emit('flyto', station)"
+          >
             Details
           </button>
         </div>
-      </article>
+      </button>
     </div>
   </aside>
 </template>
