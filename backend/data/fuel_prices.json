@@ -1,0 +1,115 @@
+{
+  "generated_at": "2026-06-03T03:14:56Z",
+  "regions": [
+    "Jakarta Pusat",
+    "Jakarta Selatan",
+    "Jakarta Barat",
+    "Jakarta Timur",
+    "Jakarta Utara"
+  ],
+  "prices": [
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Pertamax Turbo",
+      "fuel_type": "RON_98",
+      "price": 20750,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T03:15:05Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Pertamax Green 95",
+      "fuel_type": "RON_95",
+      "price": 12900,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T03:15:05Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Pertamax",
+      "fuel_type": "RON_92",
+      "price": 12300,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T03:15:05Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Pertamax Pertashop",
+      "fuel_type": "RON_92",
+      "price": 12200,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T03:15:05Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Pertalite",
+      "fuel_type": "RON_90",
+      "price": 10000,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T03:15:05Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Pertamina Dex",
+      "fuel_type": "DIESEL_CN_53",
+      "price": 24800,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T03:15:05Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Dexlite",
+      "fuel_type": "DIESEL_CN_51",
+      "price": 23000,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T03:15:05Z"
+    },
+    {
+      "brand": "Pertamina",
+      "fuel_name": "Bio Solar Subsidi",
+      "fuel_type": "UNKNOWN",
+      "price": 6800,
+      "location": "Prov. DKI Jakarta",
+      "effective_at": "Update as of June 1, 2026",
+      "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T03:15:05Z"
+    },
+    {
+      "brand": "Shell",
+      "fuel_name": "Shell V-Power Diesel",
+      "fuel_type": "DIESEL_CN_51",
+      "price": 24490,
+      "location": "DKI Jakarta",
+      "effective_at": "01 Juni 2026",
+      "source_url": "https://www.shell.co.id/in_id/pengendara-bermotor/bahan-bakar-shell/harga-bahan-bakar-shell.model.json",
+      "source_status": "scraped",
+      "scraped_at": "2026-06-03T03:15:05Z"
+    }
+  ],
+  "errors": [
+    "BP: official page returned HTTP 403",
+    "Vivo: Get \"https://www.vivoenergy.co.id/\": dial tcp 45.77.56.63:443: connect: connection refused"
+  ]
+}
