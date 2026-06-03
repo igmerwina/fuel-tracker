@@ -1,29 +1,48 @@
-# Jakarta BBM Tracker Backend
+# Jakarta BBM Tracker - Backend API
 
-Backend Go ini melakukan scrape harga BBM saat server dinyalakan, menyimpan hasil sementara ke `data/fuel_prices.json`, lalu menyediakan cache lewat REST API.
+Backend Go untuk Jakarta BBM Tracker. Melakukan scraping harga BBM dari situs resmi brand (Pertamina, Shell, Vivo, BP) saat server dinyalakan, menyimpan hasil cache ke `data/fuel_prices.json`, dan menyediakan REST API untuk frontend.
 
-## Run
+## Menjalankan Backend
 
 ```bash
 cd backend
 go run ./cmd/server
 ```
 
-Server default berjalan di `:8080`.
+Server berjalan di `http://localhost:8080` (default).
 
-## Env
+## Konfigurasi Environment
 
-- `PORT`: port HTTP, default `8080`.
-- `PERTAMINA_PRICE_URL`: override URL resmi Pertamina.
-- `SHELL_PRICE_URL`: override URL resmi Shell.
-- `BP_PRICE_URL`: override URL resmi BP.
-- `VIVO_PRICE_URL`: override URL resmi Vivo.
-- `SCRAPE_TIMEOUT_SECONDS`: timeout request scrape, default `20`.
+- `PORT`: Port HTTP server, default `8080`
+- `PERTAMINA_PRICE_URL`: Override URL scrape Pertamina
+- `SHELL_PRICE_URL`: Override URL scrape Shell
+- `BP_PRICE_URL`: Override URL scrape BP
+- `VIVO_PRICE_URL`: Override URL scrape Vivo
+- `SCRAPE_TIMEOUT_SECONDS`: Timeout untuk scraping request, default `20`
 
-## Endpoints
+## Endpoints API
 
-- `GET /health`
-- `GET /api/v1/prices`
-- `POST /api/v1/scrape`
+### Health Check
+```
+GET /health
+```
+Response: `{"status": "ok"}`
 
-Catatan: beberapa situs resmi dapat mengubah struktur HTML atau membatasi akses otomatis. Jika scrape gagal, response tetap menyertakan status error per sumber di `errors`, dan cache JSON tetap ditulis dengan hasil yang berhasil.
+### Ambil Harga BBM (Cache)
+```
+GET /api/v1/prices
+```
+Response: JSON array harga BBM dari cache `data/fuel_prices.json`
+
+### Trigger Scrape Ulang
+```
+POST /api/v1/scrape
+```
+Melakukan scraping harga BBM dari semua sumber dan update cache.
+
+## Catatan Penting
+
+- Beberapa situs resmi brand dapat mengubah struktur HTML atau membatasi akses otomatis
+- Jika scrape gagal, API tetap mengembalikan status error per sumber di field `errors`
+- Cache JSON (`data/fuel_prices.json`) tetap diupdate dengan hasil yang berhasil di-scrape
+- Gunakan endpoint `/api/v1/scrape` untuk refresh harga terbaru secara manual

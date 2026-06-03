@@ -1,60 +1,62 @@
 # Jakarta BBM Tracker
 
-A modern Vue.js 3 fuel price tracker application for Jakarta, Indonesia. Track fuel prices from major Indonesian fuel brands (Pertamina, Shell, Vivo, BP) across different regions of Jakarta.
+Aplikasi pelacak harga bahan bakar minyak (BBM) modern berbasis Vue.js 3 untuk Jakarta, Indonesia. Pantau harga BBM dari merek-merek besar Indonesia (Pertamina, Shell, Vivo, BP) di berbagai wilayah Jakarta.
 
-## Features
+## Fitur Utama
 
-✨ **Key Features:**
-- 📍 Browse fuel stations across 5 Jakarta regions (North, South, East, West, Central)
-- ⛽ Track prices for Regular, Premium, and Diesel fuel
-- 🏢 Filter by brand (Pertamina, Shell, Vivo, BP)
-- 📊 Sort by price, brand, or region
-- 📱 Fully responsive mobile-first design
-- 🎨 Modern gradient UI with smooth interactions
-- 🔍 Detailed station information in modal popups
+✨ **Keunggulan Aplikasi:**
+- 📍 Jelajahi stasiun pengisian bahan bakar (SPBU) di 5 wilayah Jakarta (Utara, Selatan, Timur, Barat, Pusat)
+- ⛽ Lacak harga untuk BBM RON 90, RON 92, RON 95, RON 98, dan Diesel CN 51/53
+- 🏢 Filter berdasarkan merek (Pertamina, Shell, Vivo, BP)
+- 📊 Sortir berdasarkan harga, merek, atau wilayah
+- 📱 Desain responsif mobile-first yang sempurna
+- 🗺️ Peta interaktif Leaflet dengan penanda lokasi stasiun
+- 🎨 UI dengan gradien modern dan interaksi halus
+- 🔍 Informasi detail stasiun dalam popup peta
 
-## Tech Stack
+## Stack Teknologi
 
-- **Vue.js 3** - Progressive JavaScript framework
-- **TypeScript** - Type-safe JavaScript
-- **Vite** - Lightning-fast build tool
-- **Scoped CSS** - Component-scoped styling
+- **Vue.js 3** - Framework JavaScript progresif
+- **TypeScript** - JavaScript dengan type safety
+- **Vite** - Build tool yang super cepat
+- **Tailwind CSS** - Utility-first CSS framework
+- **Leaflet.js** - Library peta interaktif
+- **PostCSS & Autoprefixer** - CSS processing otomatis
 
-## Project Structure
+## Struktur Proyek
 
 ```
 src/
 ├── components/
-│   ├── Header.vue        # Main header with branding
-│   ├── FilterBar.vue     # Region, brand, and sort filters
-│   ├── StatsPanel.vue    # Statistics overview
-│   ├── StationCard.vue   # Individual station card with modal
-│   └── StationList.vue   # Grid of station cards
+│   ├── Header.vue        # Header aplikasi dengan branding
+│   ├── FilterBar.vue     # Filter wilayah, merek, dan jenis BBM
+│   ├── Map.vue           # Peta interaktif Leaflet dengan penanda SPBU
+│   └── StationList.vue   # Daftar stasiun di sidebar dengan harga
 ├── data/
-│   └── stations.ts       # Dummy fuel station and region data
+│   └── stations.ts       # Data dummy stasiun BBM dan region
 ├── types/
-│   └── index.ts          # TypeScript interfaces
-├── App.vue               # Main application component
-├── main.ts               # Application entry point
+│   └── index.ts          # Type definitions TypeScript
+├── App.vue               # Komponen aplikasi utama (layout 2 kolom)
+├── main.ts               # Entry point aplikasi
 └── style.css             # Global styles
 ```
 
-## Getting Started
+## Memulai
 
-### Prerequisites
+### Prasyarat
 - Node.js 16+
-- npm or yarn
+- npm atau yarn
 
-### Installation
+### Instalasi
 
 ```bash
 # Install dependencies
 npm install
 
-# Start development server
+# Jalankan development server
 npm run dev
 
-# Build for production
+# Build untuk production
 npm run build
 
 # Preview production build
@@ -63,77 +65,96 @@ npm run preview
 
 ## Development
 
-The development server runs at `http://localhost:5173/`
+Development server berjalan di `http://localhost:5173/`
 
-### Available Scripts
+### Script yang Tersedia
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
+- `npm run dev` - Jalankan development server
+- `npm run build` - Build untuk production
 - `npm run preview` - Preview production build
-- `npm run type-check` - Run TypeScript type checking (if configured)
 
 ## Data
 
-**Note**: All fuel price data is dummy data for demonstration purposes. This application uses hardcoded mock data stored in `src/data/stations.ts`.
+**Catatan**: Semua data harga bahan bakar adalah dummy data untuk tujuan demonstrasi. Aplikasi ini menggunakan data mock yang hardcoded di `src/data/stations.ts`.
 
-### Sample Data Includes:
-- 25 fuel stations across 5 Jakarta regions
-- 4 fuel brands with authentic branding colors
-- 3 fuel types with different pricing
-- Station locations with coordinates
-- Last updated timestamps
+### Data Sampel Mencakup:
+- 25 stasiun BBM di 5 wilayah Jakarta
+- 4 merek BBM dengan warna branding yang autentik
+- 6 jenis BBM (RON 90/92/95/98, Diesel CN 51/53)
+- Lokasi stasiun dengan koordinat geografis
+- Informasi alamat dan wilayah lengkap
 
-## Styling
+## Styling & Warna
 
-The application uses a modern color scheme:
-- **Primary Gradient**: Purple (#667eea to #764ba2)
-- **Brand Colors**:
+Aplikasi menggunakan skema warna modern:
+- **Gradien Utama**: Purple (#667eea ke #764ba2)
+- **Warna Brand**:
   - Pertamina: Navy Blue (#003d7a)
-  - Shell: Red (#e81c1c)
-  - Vivo: Orange (#ffa500)
-  - BP: Green (#00a651)
+  - Shell: Merah (#e81c1c)
+  - Vivo: Biru (#3b82f6)
+  - BP: Hijau (#00a651)
 
-## Components
+## Komponen-Komponen
 
 ### Header
-Displays the application title and branding with gradient background.
+Menampilkan judul aplikasi dan branding dengan latar belakang gradien.
 
 ### FilterBar
-Provides filtering and sorting controls:
-- Filter by region
-- Filter by brand
-- Sort by price, brand, or region
-- Reset filters button
+Menyediakan kontrol filter dan sorting yang kompak:
+- Filter berdasarkan wilayah
+- Filter berdasarkan merek
+- Filter berdasarkan jenis BBM
+- Tombol reset filter
 
-### StatsPanel
-Shows overview statistics:
-- Total stations
-- Number of regions
-- Cheapest fuel price
-- Most expensive fuel price
-
-### StationCard
-Displays individual fuel station:
-- Station name and brand badge
-- Address and region
-- Three fuel price types
-- Click to view detailed information in modal
+### Map
+Peta interaktif berbasis Leaflet yang menampilkan:
+- Penanda SPBU berwarna berdasarkan merek
+- Popup dengan informasi stasiun dan harga
+- Animasi flyTo saat memilih stasiun dari daftar
+- Support untuk geolokasi dan zoom interaktif
 
 ### StationList
-Grid view of all fuel stations with filtering and sorting applied.
+Daftar stasiun di sidebar yang menampilkan:
+- Badge merek dengan warna brand
+- Nama stasiun dan alamat
+- Daftar harga BBM
+- Tombol "Lihat di Peta" untuk menggeser peta ke lokasi stasiun
+
+## Backend API (Go)
+
+Aplikasi juga menyediakan backend Go yang melakukan scraping harga BBM real-time dari situs resmi brand dan menyediakan REST API.
+
+### Menjalankan Backend
+
+```bash
+cd backend
+go run ./cmd/server
+```
+
+Server berjalan di `http://localhost:8080`
+
+### Endpoints Utama
+
+- `GET /health` - Health check API
+- `GET /api/v1/prices` - Ambil harga BBM dari cache
+- `POST /api/v1/scrape` - Trigger scraping ulang harga BBM
+
+### Konfigurasi
+
+Lihat `backend/README.md` untuk detail lengkap environment variables dan konfigurasi backend.
 
 ## Browser Support
 
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
+- Chrome/Edge (versi terbaru)
+- Firefox (versi terbaru)
+- Safari (versi terbaru)
 - Mobile browsers
 
-## License
+## Lisensi
 
 MIT
 
-## Author
+## Penulis
 
-Created as a demonstration fuel tracker application inspired by FuelWatch WA.
+Dibuat sebagai aplikasi demonstrasi pelacak BBM yang terinspirasi dari FuelWatch WA.
 
