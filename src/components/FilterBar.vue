@@ -61,22 +61,12 @@ const fuelLabel = (fuel: FuelType) => {
 
     <button
       type="button"
-      class="inline-flex h-9 shrink-0 items-center gap-2 rounded-full px-3 text-sm font-black ring-1 transition focus:outline-none focus:ring-2 focus:ring-blue-600"
-      :class="filters.openNow ? 'bg-emerald-500 text-white ring-emerald-500 shadow-sm shadow-emerald-500/20' : 'bg-slate-50 text-slate-700 ring-slate-200 hover:bg-white hover:ring-slate-300'"
-      @click="emit('update-filters', { openNow: !filters.openNow })"
-    >
-      <i class="fa-regular fa-clock" aria-hidden="true"></i>
-      Buka sekarang
-    </button>
-
-    <button
-      type="button"
       class="ml-auto inline-flex h-9 shrink-0 items-center gap-2 rounded-full px-3 text-sm font-black transition focus:outline-none focus:ring-2 focus:ring-blue-600"
       :class="sortMode === 'cheapest' ? 'bg-slate-950 text-white shadow-sm shadow-slate-950/20' : 'bg-slate-50 text-slate-700 ring-1 ring-slate-200 hover:bg-white hover:ring-slate-300'"
       @click="emit('update-sort', sortMode === 'cheapest' ? 'nearest' : 'cheapest')"
     >
       <i class="fa-solid fa-sliders" aria-hidden="true"></i>
-      {{ sortMode === 'cheapest' ? 'Termurah dulu' : 'Terdekat dulu' }}
+      {{ sortMode === 'cheapest' ? 'Harga terendah' : 'Jarak terdekat' }}
     </button>
   </section>
 </template>

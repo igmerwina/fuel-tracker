@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-03T03:37:05Z",
+  "generated_at": "2026-06-05T00:00:00Z",
   "regions": [
     "Jakarta Pusat",
     "Jakarta Selatan",
@@ -133,12 +133,45 @@
       "brand": "BP",
       "fuel_name": "BP Ultimate Diesel",
       "fuel_type": "DIESEL_CN_51",
-      "price": 25060,
+      "price": 29890,
       "location": "Jabodetabek",
-      "effective_at": "1 Juni 2026",
+      "effective_at": "8 Mei 2026",
       "source_url": "https://www.bp.com/id_id/indonesia/home/produk-dan-layanan/spbu/harga.html",
       "source_status": "scraped",
       "scraped_at": "2026-06-03T03:37:16Z"
+    },
+    {
+      "brand": "Vivo",
+      "fuel_name": "Revvo 92",
+      "fuel_type": "RON_92",
+      "price": 12390,
+      "location": "Jabodetabek",
+      "effective_at": "1 Maret 2026",
+      "source_url": "https://megapolitan.antaranews.com/berita/506350/harga-bbm-spbu-vivo-naik-mulai-maret-revvo-92-jadi-rp12390-per-liter",
+      "source_status": "verified_from_official_instagram",
+      "scraped_at": "2026-06-05T00:00:00Z"
+    },
+    {
+      "brand": "Vivo",
+      "fuel_name": "Revvo 95",
+      "fuel_type": "RON_95",
+      "price": 12930,
+      "location": "Jabodetabek",
+      "effective_at": "1 Maret 2026",
+      "source_url": "https://www.haloindonesia.co.id/harga-bbm-vivo-1-maret-2026",
+      "source_status": "verified_from_official_instagram",
+      "scraped_at": "2026-06-05T00:00:00Z"
+    },
+    {
+      "brand": "Vivo",
+      "fuel_name": "Diesel Primus Plus",
+      "fuel_type": "DIESEL_CN_51",
+      "price": 14610,
+      "location": "Jabodetabek",
+      "effective_at": "1 Maret 2026",
+      "source_url": "https://megapolitan.antaranews.com/berita/506350/harga-bbm-spbu-vivo-naik-mulai-maret-revvo-92-jadi-rp12390-per-liter",
+      "source_status": "verified_from_official_instagram",
+      "scraped_at": "2026-06-05T00:00:00Z"
     }
   ],
   "stations": [

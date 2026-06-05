@@ -8,6 +8,10 @@ defineProps<{
 const emit = defineEmits<{
   'update-query': [value: string];
 }>();
+
+const handleInput = (event: Event) => {
+  emit('update-query', (event.target as HTMLInputElement).value);
+};
 </script>
 
 <template>
@@ -18,8 +22,8 @@ const emit = defineEmits<{
           <i class="fa-solid fa-gas-pump" aria-hidden="true"></i>
         </span>
         <span class="hidden min-w-0 sm:block">
-          <span class="block truncate text-sm font-black leading-4 text-slate-950">Jakarta BBM</span>
-          <span class="block truncate text-xs font-semibold text-slate-500">Pencari harga BBM</span>
+          <span class="block truncate text-sm font-black leading-4 text-slate-950">FuelWatch Jakarta</span>
+          <span class="block truncate text-xs font-semibold text-slate-500">Cek harga BBM hari ini</span>
         </span>
       </a>
 
@@ -29,10 +33,10 @@ const emit = defineEmits<{
           :value="query"
           type="search"
           class="min-w-0 bg-transparent text-base font-semibold text-slate-950 outline-none placeholder:text-slate-500"
-          placeholder="Cari Pertamax termurah, Menteng, Shell..."
+          placeholder="Cari area, merek, SPBU, atau jenis BBM..."
           aria-label="Cari SPBU atau jenis BBM"
           autocomplete="off"
-          @input="emit('update-query', ($event.target as HTMLInputElement).value)"
+          @input="handleInput"
         />
       </label>
 

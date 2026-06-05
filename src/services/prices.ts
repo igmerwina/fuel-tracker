@@ -30,3 +30,13 @@ export const fetchRealtimePrices = async (): Promise<BackendPriceCache | null> =
     return null;
   }
 };
+
+export const refreshRealtimePrices = async (): Promise<BackendPriceCache | null> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/scrape`, { method: 'POST' });
+    if (!response.ok && response.status !== 202) return null;
+    return (await response.json()) as BackendPriceCache;
+  } catch {
+    return null;
+  }
+};

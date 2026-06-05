@@ -23,7 +23,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  'select-station': [station: StationResult];
+  'select-station': [station: StationResult | null];
 }>();
 
 const mapContainer = ref<HTMLElement>();
@@ -80,6 +80,22 @@ const clusterStations = () => {
   return [...buckets.values()];
 };
 
+const densestStationGroup = () => {
+  const buckets = new globalThis.Map<string, StationResult[]>();
+  props.stations.forEach((station) => {
+    const key = `${Math.round(station.latitude / 0.035)}:${Math.round(station.longitude / 0.035)}`;
+    buckets.set(key, [...(buckets.get(key) ?? []), station]);
+  });
+  return [...buckets.values()].sort((a, b) => b.length - a.length)[0] ?? [];
+};
+
+const clusterTone = (count: number) => {
+  if (count >= 10) return 'hot';
+  if (count >= 6) return 'warm';
+  if (count >= 3) return 'fresh';
+  return 'soft';
+};
+
 const createStationMarker = (station: StationResult) => {
   const tone = markerTone(station);
   const price = ron92Price(station);
@@ -107,7 +123,12 @@ const createStationMarker = (station: StationResult) => {
       iconAnchor: [21, 21],
       className: 'fuel-marker',
     }),
-  }).on('click mouseover', () => {
+  }).on('click', () => {
+    if (props.selectedStationId === station.id) {
+      selectedStation.value = null;
+      emit('select-station', null);
+      return;
+    }
     selectedStation.value = station;
     emit('select-station', station);
   });
@@ -118,7 +139,7 @@ const createClusterMarker = (stations: StationResult[]) => {
   return L.marker([cheapest.latitude, cheapest.longitude], {
     icon: L.divIcon({
       html: `
-        <button class="gm-cluster" aria-label="${stations.length} SPBU terdekat">
+        <button class="gm-cluster gm-cluster--${clusterTone(stations.length)}" aria-label="${stations.length} SPBU terdekat">
           <strong>${stations.length}</strong>
           <span>mulai Rp ${formatPrice(ron92Price(cheapest))}</span>
         </button>
@@ -163,7 +184,7 @@ const initMap = () => {
     minZoom: 11,
     zoomControl: false,
     worldCopyJump: false,
-  }).setView([JAKARTA_CENTER.lat, JAKARTA_CENTER.lng], 13);
+  });
 
   L.control.zoom({ position: 'bottomright' }).addTo(map);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -177,6 +198,14 @@ const initMap = () => {
   markerLayer = L.layerGroup().addTo(map);
   map.on('zoomend', syncMarkers);
   map.setMaxBounds(jakartaBounds);
+  const dense = densestStationGroup();
+  if (dense.length) {
+    const lat = dense.reduce((sum, station) => sum + station.latitude, 0) / dense.length;
+    const lng = dense.reduce((sum, station) => sum + station.longitude, 0) / dense.length;
+    map.setView([lat, lng], 14);
+  } else {
+    map.setView([JAKARTA_CENTER.lat, JAKARTA_CENTER.lng], 13);
+  }
   syncMarkers();
   mapReady.value = true;
 };
@@ -391,7 +420,7 @@ watch(
   padding: 8px 11px;
   border: 2px solid #ffffff;
   border-radius: 999px;
-  background: #0f172a;
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: #ffffff;
   box-shadow: 0 14px 30px rgba(15, 23, 42, 0.22);
   cursor: pointer;
@@ -402,6 +431,23 @@ watch(
 
 .gm-cluster:hover {
   transform: scale(1.08);
+}
+
+.gm-cluster--soft {
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
+}
+
+.gm-cluster--fresh {
+  background: linear-gradient(135deg, #22c55e, #14b8a6);
+}
+
+.gm-cluster--warm {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+}
+
+.gm-cluster--hot {
+  background: linear-gradient(135deg, #f472b6, #ef4444);
+  box-shadow: 0 16px 34px rgba(239, 68, 68, 0.28);
 }
 
 .gm-cluster strong {

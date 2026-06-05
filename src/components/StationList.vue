@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { nextTick, ref, watch } from 'vue';
 import type { FuelType, SortMode, StationResult } from '../types';
 
-defineProps<{
+const props = defineProps<{
   stations: StationResult[];
   activeFuel: FuelType;
   sortMode: SortMode;
@@ -12,39 +13,63 @@ const emit = defineEmits<{
   flyto: [station: StationResult];
   'toggle-favorite': [stationId: string];
   'start-navigation': [station: StationResult];
+  'reset-filters': [];
 }>();
+
+const cardRefs = ref<Record<string, HTMLElement>>({});
+
+const setCardRef = (stationId: string, element: Element | null | unknown) => {
+  if (element instanceof HTMLElement) cardRefs.value[stationId] = element;
+};
 
 const price = (station: StationResult, type: FuelType) =>
   station.prices.find((item) => item.type === type)?.price.toLocaleString('id-ID') ?? '-';
 
 const activePrice = (station: StationResult, type: FuelType) =>
   station.prices.find((item) => item.type === type)?.price.toLocaleString('id-ID') ?? station.selectedPrice.toLocaleString('id-ID');
+
+watch(
+  () => props.selectedStationId,
+  async (stationId) => {
+    await nextTick();
+    cardRefs.value[stationId]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  },
+);
 </script>
 
 <template>
   <aside
-    class="fixed inset-x-0 bottom-0 z-[900] max-h-[42vh] overflow-hidden rounded-t-[24px] bg-white shadow-2xl shadow-slate-950/16 lg:static lg:max-h-none lg:rounded-2xl lg:shadow-sm lg:ring-1 lg:ring-slate-100"
+    class="fixed bottom-0 left-2 right-2 z-[900] max-h-[42vh] overflow-hidden rounded-t-[24px] bg-white shadow-2xl shadow-slate-950/16 lg:static lg:max-h-none lg:rounded-2xl lg:shadow-sm lg:ring-1 lg:ring-slate-100"
     aria-label="Hasil SPBU"
   >
     <div class="mx-auto mt-2 h-1.5 w-12 rounded-full bg-slate-300 lg:hidden"></div>
 
-    <div class="flex h-14 items-center justify-between px-4">
+    <div class="flex h-14 items-center justify-between px-5">
       <div>
         <p class="text-[11px] font-black uppercase tracking-wide text-slate-500">
-          {{ sortMode === 'nearest' ? 'Terdekat' : 'Harga terbaik' }}
+          {{ sortMode === 'nearest' ? 'Jarak terdekat' : 'Harga terendah' }}
         </p>
         <h2 class="text-base font-black text-slate-950">{{ stations.length }} SPBU</h2>
       </div>
     </div>
 
-    <div class="max-h-[calc(42vh-64px)] overflow-y-auto px-2.5 pb-3 lg:max-h-[calc(100vh-150px)]">
-      <div v-if="!stations.length" class="grid gap-2 px-1">
-        <div v-for="item in 4" :key="item" class="h-24 animate-pulse rounded-2xl bg-slate-100"></div>
+    <div class="max-h-[calc(42vh-64px)] overflow-y-auto px-3 pb-4 lg:max-h-[calc(100vh-150px)]">
+      <div v-if="!stations.length" class="rounded-2xl bg-slate-50 p-5 text-center ring-1 ring-slate-100">
+        <p class="text-sm font-black text-slate-950">Tidak ada SPBU cocok</p>
+        <p class="mt-1 text-xs font-bold text-slate-500">Coba ubah kata kunci, merek, wilayah, atau jenis BBM.</p>
+        <button
+          type="button"
+          class="mt-4 inline-flex h-9 items-center justify-center rounded-full bg-blue-600 px-4 text-xs font-black text-white"
+          @click="emit('reset-filters')"
+        >
+          Reset filter
+        </button>
       </div>
 
       <article
         v-for="station in stations"
         :key="station.id"
+        :ref="(element) => setCardRef(station.id, element)"
         class="mb-2.5 grid min-h-[104px] w-full cursor-pointer gap-2 rounded-2xl bg-white p-3 text-left shadow-sm ring-1 transition duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/80 focus:outline-none focus:ring-2 focus:ring-blue-600"
         :class="[
           selectedStationId === station.id ? 'ring-blue-500 shadow-blue-100 animate-selected-card' : station.isCheapest ? 'ring-emerald-300 bg-emerald-50/35' : 'ring-slate-100',
@@ -72,6 +97,9 @@ const activePrice = (station: StationResult, type: FuelType) =>
               </div>
               <span v-if="station.isCheapest" class="shrink-0 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-black text-white">
                 <i class="fa-solid fa-fire-flame-curved" aria-hidden="true"></i>
+              </span>
+              <span v-else-if="station.hasSamePrice" class="shrink-0 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-black text-emerald-700">
+                sama
               </span>
             </div>
           </div>
@@ -104,7 +132,7 @@ const activePrice = (station: StationResult, type: FuelType) =>
             @click.stop="emit('start-navigation', station)"
           >
             <i class="fa-solid fa-route" aria-hidden="true"></i>
-            Rute
+            <span v-if="selectedStationId === station.id || station.isCheapest">Rute</span>
           </button>
         </div>
       </article>

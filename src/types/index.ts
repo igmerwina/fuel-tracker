@@ -26,7 +26,6 @@ export interface FilterState {
   region: Region | '';
   brand: FuelBrand | '';
   fuelType: FuelType | '';
-  openNow: boolean;
 }
 
 export interface StationResult extends FuelStation {
@@ -36,5 +35,6 @@ export interface StationResult extends FuelStation {
   averagePrice: number;
   savingsPerLiter: number;
   isCheapest: boolean;
+  hasSamePrice: boolean;
   isFavorite: boolean;
 }
