@@ -13,7 +13,7 @@
 import { nextTick, onMounted, ref, watch } from 'vue';
 import L from 'leaflet';
 import type { FuelType, StationResult } from '../types/index';
-import { JAKARTA_BOUNDS, JAKARTA_CENTER } from '../data/stations';
+import { JAKARTA_BOUNDS } from '../data/stations';
 
 const props = defineProps<{
   stations: StationResult[];
@@ -78,15 +78,6 @@ const clusterStations = () => {
     buckets.set(key, [...(buckets.get(key) ?? []), station]);
   });
   return [...buckets.values()];
-};
-
-const densestStationGroup = () => {
-  const buckets = new globalThis.Map<string, StationResult[]>();
-  props.stations.forEach((station) => {
-    const key = `${Math.round(station.latitude / 0.035)}:${Math.round(station.longitude / 0.035)}`;
-    buckets.set(key, [...(buckets.get(key) ?? []), station]);
-  });
-  return [...buckets.values()].sort((a, b) => b.length - a.length)[0] ?? [];
 };
 
 const clusterTone = (count: number) => {
@@ -187,8 +178,8 @@ const initMap = () => {
   });
 
   L.control.zoom({ position: 'bottomright' }).addTo(map);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors',
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
     bounds: jakartaBounds,
     maxZoom: 19,
     minZoom: 11,
@@ -198,14 +189,7 @@ const initMap = () => {
   markerLayer = L.layerGroup().addTo(map);
   map.on('zoomend', syncMarkers);
   map.setMaxBounds(jakartaBounds);
-  const dense = densestStationGroup();
-  if (dense.length) {
-    const lat = dense.reduce((sum, station) => sum + station.latitude, 0) / dense.length;
-    const lng = dense.reduce((sum, station) => sum + station.longitude, 0) / dense.length;
-    map.setView([lat, lng], 14);
-  } else {
-    map.setView([JAKARTA_CENTER.lat, JAKARTA_CENTER.lng], 13);
-  }
+  map.setView([-6.1856, 106.8272], 15);
   syncMarkers();
   mapReady.value = true;
 };
@@ -403,14 +387,20 @@ watch(
   width: max-content;
   align-items: center;
   gap: 6px;
-  margin-top: 4px;
-  padding: 7px 10px;
+  margin-top: 6px;
+  padding: 8px 12px;
   border-radius: 999px;
-  background: #2563eb;
-  color: #ffffff;
+  border: 1px solid rgba(29, 78, 216, 0.22);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff !important;
   font-size: 12px;
   font-weight: 950;
   text-decoration: none;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.28);
+}
+
+.price-tooltip__route i {
+  color: #ffffff;
 }
 
 .gm-cluster {

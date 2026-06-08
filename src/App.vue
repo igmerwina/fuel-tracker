@@ -21,6 +21,7 @@ const sortMode = ref<SortMode>('cheapest');
 const priceDay = ref<'today' | 'tomorrow'>('today');
 const selectedStationId = ref<string>('');
 const navigatingStationId = ref<string>('');
+const showCheapestCard = ref(true);
 const userLocation = ref(JAKARTA_CENTER);
 const locationStatus = ref<'idle' | 'ok' | 'outside' | 'denied'>('idle');
 const isRefreshingPrices = ref(false);
@@ -159,6 +160,7 @@ const resetFilters = () => {
   filterState.value = { query: '', region: '', brand: '', fuelType: 'RON_92' };
   sortMode.value = 'cheapest';
   priceDay.value = 'today';
+  showCheapestCard.value = true;
 };
 
 const handleFlyTo = (station: StationResult) => {
@@ -338,13 +340,23 @@ onMounted(() => {
       <section class="grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-[minmax(0,3fr)_minmax(320px,1fr)]">
         <div class="relative min-h-[calc(100vh-132px)] overflow-hidden rounded-[12px] bg-white shadow-lg shadow-slate-200/70 lg:min-h-0">
           <article
-            v-if="cheapestStation"
+            v-if="cheapestStation && showCheapestCard"
             class="absolute left-3 right-3 top-3 z-[700] max-w-[360px] rounded-2xl bg-white/95 p-3 shadow-xl shadow-slate-950/12 ring-1 ring-white/70 backdrop-blur md:right-auto"
           >
-            <p class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-700">
-              <i class="fa-solid fa-fire-flame-curved" aria-hidden="true"></i>
-              Harga terbaik hari ini
-            </p>
+            <div class="flex items-start justify-between gap-3">
+              <p class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-700">
+                <i class="fa-solid fa-fire-flame-curved" aria-hidden="true"></i>
+                Harga terbaik hari ini
+              </p>
+              <button
+                type="button"
+                class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-900"
+                aria-label="Tutup kartu harga terbaik"
+                @click="showCheapestCard = false"
+              >
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+              </button>
+            </div>
             <div class="mt-2 flex items-end justify-between gap-3">
               <div class="min-w-0">
                 <h2 class="truncate text-sm font-black text-slate-950">{{ cheapestStation.name }}</h2>
