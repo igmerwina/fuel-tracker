@@ -2,6 +2,8 @@
 
 Aplikasi pencari SPBU dan harga BBM Jakarta berbasis Vue 3, TypeScript, Leaflet, dan backend Go. UI terinspirasi FuelWatch WA: peta, daftar harga terendah, filter cepat, GPS distance, dan refresh harga.
 
+![Screenshot aplikasi FuelWatch Jakarta](docs/app-screenshot.jpg)
+
 ## Fitur
 
 - Peta SPBU Jakarta dengan marker brand dan cluster warna dinamis.
