@@ -1,6 +1,7 @@
 {
   "framework": "vite",
-  "buildCommand": "npm run build:vercel",
+  "installCommand": "corepack enable && pnpm install --no-frozen-lockfile",
+  "buildCommand": "pnpm run build:vercel",
   "outputDirectory": "dist",
   "rewrites": [
     {
