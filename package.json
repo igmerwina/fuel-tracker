@@ -3,14 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "engines": {
-    "node": "20.x",
-    "npm": "10.x"
-  },
   "scripts": {
     "dev": "NODE_OPTIONS=--no-deprecation vite",
     "build": "NODE_OPTIONS=--no-deprecation vue-tsc -b && NODE_OPTIONS=--no-deprecation vite build",
-    "build:vercel": "npx vue-tsc -b && npx vite build",
+    "build:vercel": "vue-tsc -b && vite build",
     "preview": "NODE_OPTIONS=--no-deprecation vite preview"
   },
   "dependencies": {
