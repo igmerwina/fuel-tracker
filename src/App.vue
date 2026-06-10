@@ -269,7 +269,7 @@ onMounted(() => {
       @update-query="updateQuery"
     />
 
-    <main class="mx-auto flex h-[calc(100vh-72px)] max-w-[1800px] flex-col gap-3 p-2 md:p-3">
+    <main class="mx-auto flex h-[calc(100vh-60px)] max-w-[1800px] flex-col gap-2 p-1.5 md:h-[calc(100vh-72px)] md:gap-3 md:p-3">
       <FilterBar
         :filters="filterState"
         :sort-mode="sortMode"
@@ -277,11 +277,11 @@ onMounted(() => {
         @update-sort="sortMode = $event"
       />
 
-      <section class="flex flex-wrap items-center gap-2 rounded-2xl bg-white px-3 py-2 text-xs font-black text-slate-600 shadow-sm shadow-slate-200/60 ring-1 ring-slate-100">
-        <div class="inline-flex rounded-full bg-slate-100 p-1">
+      <section class="flex flex-wrap items-center gap-1.5 rounded-xl bg-white px-2.5 py-1.5 text-[11px] font-black text-slate-600 shadow-sm shadow-slate-200/60 ring-1 ring-slate-100 md:gap-2 md:rounded-2xl md:px-3 md:py-2 md:text-xs">
+        <div class="inline-flex rounded-full bg-slate-100 p-0.5 md:p-1">
           <button
             type="button"
-            class="h-8 rounded-full px-3 transition"
+            class="h-7 rounded-full px-2.5 text-[11px] transition md:h-8 md:px-3 md:text-xs"
             :class="priceDay === 'today' ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/20' : 'text-slate-600'"
             @click="priceDay = 'today'"
           >
@@ -289,7 +289,7 @@ onMounted(() => {
           </button>
           <button
             type="button"
-            class="h-8 rounded-full px-3 transition"
+            class="h-7 rounded-full px-2.5 text-[11px] transition md:h-8 md:px-3 md:text-xs"
             :class="priceDay === 'tomorrow' ? 'bg-amber-500 text-white shadow-sm shadow-amber-500/20' : 'text-slate-400'"
             title="Data harga besok belum tersedia"
             @click="priceDay = 'tomorrow'"
@@ -297,35 +297,35 @@ onMounted(() => {
             Besok
           </button>
         </div>
-        <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-2 text-emerald-700">
+        <span class="hidden sm:inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1.5 text-emerald-700 md:px-3 md:py-2">
           <i class="fa-solid fa-lock" aria-hidden="true"></i>
-          Harga brand-level, berlaku 24 jam
+          Harga brand-level
         </span>
         <span
           v-if="locationStatus === 'ok'"
-          class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-2 text-blue-700"
+          class="hidden sm:inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1.5 text-blue-700 md:px-3 md:py-2"
         >
           <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
-          Jarak dari GPS
+          GPS aktif
         </span>
         <span
           v-else-if="locationStatus === 'outside'"
-          class="inline-flex items-center gap-1 rounded-full bg-rose-50 px-3 py-2 text-rose-700"
+          class="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2 py-1 text-[10px] text-rose-700 md:px-3 md:py-2 md:text-xs"
         >
           <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-          Lokasi Anda di luar jangkauan Jakarta
+          Luar Jakarta
         </span>
-        <span v-if="priceDay === 'tomorrow'" class="rounded-full bg-amber-50 px-3 py-2 text-amber-700">
-          Harga besok belum tersedia
+        <span v-if="priceDay === 'tomorrow'" class="rounded-full bg-amber-50 px-2 py-1 text-[10px] text-amber-700 md:px-3 md:py-2 md:text-xs">
+          Besok blm tersedia
         </span>
         <button
           type="button"
-          class="ml-auto inline-flex h-9 items-center gap-2 rounded-full bg-blue-600 px-3 text-white shadow-sm shadow-blue-600/20 transition hover:bg-blue-700 disabled:cursor-wait disabled:opacity-75"
+          class="ml-auto inline-flex h-7 items-center gap-1.5 rounded-full bg-blue-600 px-2.5 text-[11px] text-white shadow-sm shadow-blue-600/20 transition hover:bg-blue-700 disabled:cursor-wait disabled:opacity-75 md:h-9 md:gap-2 md:px-3 md:text-xs"
           :disabled="isRefreshingPrices"
           @click="refreshPrices"
         >
-          <i class="fa-solid fa-rotate-right" :class="isRefreshingPrices ? 'animate-spin' : ''" aria-hidden="true"></i>
-          {{ isRefreshingPrices ? 'Memuat...' : 'Refresh data' }}
+          <i class="fa-solid fa-rotate-right text-[10px] md:text-xs" :class="isRefreshingPrices ? 'animate-spin' : ''" aria-hidden="true"></i>
+          <span class="hidden sm:inline">{{ isRefreshingPrices ? 'Memuat...' : 'Refresh' }}</span>
         </button>
       </section>
 
@@ -337,39 +337,39 @@ onMounted(() => {
         {{ priceToast.message }}
       </div>
 
-      <section class="grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-[minmax(0,3fr)_minmax(320px,1fr)]">
-        <div class="relative min-h-[calc(100vh-132px)] overflow-hidden rounded-[12px] bg-white shadow-lg shadow-slate-200/70 lg:min-h-0">
+      <section class="grid min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-[minmax(0,3fr)_minmax(320px,1fr)] lg:gap-3">
+        <div class="relative min-h-[calc(100vh-120px)] overflow-hidden rounded-[10px] bg-white shadow-lg shadow-slate-200/70 lg:min-h-0 lg:rounded-[12px]">
           <article
             v-if="cheapestStation && showCheapestCard"
-            class="absolute left-3 right-3 top-3 z-[700] max-w-[360px] rounded-2xl bg-white/95 p-3 shadow-xl shadow-slate-950/12 ring-1 ring-white/70 backdrop-blur md:right-auto"
+            class="absolute left-2 right-2 top-2 z-[700] max-w-[320px] rounded-xl bg-white/95 p-2.5 shadow-xl shadow-slate-950/12 ring-1 ring-white/70 backdrop-blur md:left-3 md:right-auto md:top-3 md:max-w-[360px] md:rounded-2xl md:p-3"
           >
-            <div class="flex items-start justify-between gap-3">
-              <p class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wide text-emerald-700">
+            <div class="flex items-start justify-between gap-2 md:gap-3">
+              <p class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-emerald-700 md:gap-2 md:px-2.5 md:py-1 md:text-[11px]">
                 <i class="fa-solid fa-fire-flame-curved" aria-hidden="true"></i>
-                Harga terbaik hari ini
+                Terbaik hari ini
               </p>
               <button
                 type="button"
-                class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-900"
+                class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-900 md:h-7 md:w-7"
                 aria-label="Tutup kartu harga terbaik"
                 @click="showCheapestCard = false"
               >
                 <i class="fa-solid fa-xmark" aria-hidden="true"></i>
               </button>
             </div>
-            <div class="mt-2 flex items-end justify-between gap-3">
+            <div class="mt-1.5 flex items-end justify-between gap-2 md:mt-2 md:gap-3">
               <div class="min-w-0">
-                <h2 class="truncate text-sm font-black text-slate-950">{{ cheapestStation.name }}</h2>
-                <p class="mt-0.5 text-2xl font-black tracking-tight text-slate-950">
-                  Rp{{ cheapestStation.selectedPrice.toLocaleString('id-ID') }}<span class="text-sm text-slate-500">/L</span>
+                <h2 class="truncate text-xs font-black text-slate-950 md:text-sm">{{ cheapestStation.name }}</h2>
+                <p class="mt-0.5 text-lg font-black tracking-tight text-slate-950 md:mt-0.5 md:text-2xl">
+                  Rp{{ cheapestStation.selectedPrice.toLocaleString('id-ID') }}<span class="text-xs text-slate-500 md:text-sm">/L</span>
                 </p>
-                <p class="mt-0.5 text-xs font-bold text-slate-500">
-                  {{ cheapestStation.distanceKm.toFixed(1) }} km dari sini · Hemat Rp{{ cheapestStation.savingsPerLiter.toLocaleString('id-ID') }}/L
+                <p class="mt-0.5 text-[11px] font-bold text-slate-500 md:text-xs">
+                  {{ cheapestStation.distanceKm.toFixed(1) }} km · Hemat Rp{{ cheapestStation.savingsPerLiter.toLocaleString('id-ID') }}/L
                 </p>
               </div>
               <button
                 type="button"
-                class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 md:h-10 md:w-10"
                 aria-label="Mulai navigasi"
                 @click="startNavigation(cheapestStation)"
               >
