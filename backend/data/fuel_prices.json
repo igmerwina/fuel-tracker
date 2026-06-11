@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-05T00:00:00Z",
+  "generated_at": "2026-06-11T00:00:00Z",
   "regions": [
     "Jakarta Pusat",
     "Jakarta Selatan",
@@ -23,7 +23,7 @@
       "brand": "Pertamina",
       "fuel_name": "Pertamax",
       "fuel_type": "RON_92",
-      "price": 12300,
+      "price": 16250,
       "location": "Prov. DKI Jakarta",
       "effective_at": "Update as of June 1, 2026",
       "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
@@ -95,6 +95,28 @@
       "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
       "source_status": "scraped",
       "scraped_at": "2026-06-03T03:37:15Z"
+    },
+    {
+      "brand": "Shell",
+      "fuel_name": "Shell Super",
+      "fuel_type": "RON_92",
+      "price": 13290,
+      "location": "DKI Jakarta",
+      "effective_at": "10 Juni 2026",
+      "source_url": "https://www.shell.co.id/in_id/pengendara-bermotor/bahan-bakar-shell/harga-bahan-bakar-shell.html",
+      "source_status": "fallback",
+      "scraped_at": "2026-06-10T00:00:00Z"
+    },
+    {
+      "brand": "Shell",
+      "fuel_name": "Shell V-Power",
+      "fuel_type": "RON_95",
+      "price": 13990,
+      "location": "DKI Jakarta",
+      "effective_at": "10 Juni 2026",
+      "source_url": "https://www.shell.co.id/in_id/pengendara-bermotor/bahan-bakar-shell/harga-bahan-bakar-shell.html",
+      "source_status": "fallback",
+      "scraped_at": "2026-06-10T00:00:00Z"
     },
     {
       "brand": "Shell",
