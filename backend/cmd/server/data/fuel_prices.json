@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-03T09:25:52Z",
+  "generated_at": "2026-06-10T00:00:00Z",
   "regions": [
     "Jakarta Pusat",
     "Jakarta Selatan",
@@ -17,18 +17,18 @@
       "effective_at": "Update as of June 1, 2026",
       "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T09:26:00Z"
+      "scraped_at": "2026-06-03T03:37:15Z"
     },
     {
       "brand": "Pertamina",
       "fuel_name": "Pertamax",
       "fuel_type": "RON_92",
-      "price": 12300,
+      "price": 16250,
       "location": "Prov. DKI Jakarta",
       "effective_at": "Update as of June 1, 2026",
       "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T09:26:00Z"
+      "scraped_at": "2026-06-03T03:37:15Z"
     },
     {
       "brand": "Pertamina",
@@ -39,7 +39,7 @@
       "effective_at": "Update as of June 1, 2026",
       "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T09:26:00Z"
+      "scraped_at": "2026-06-03T03:37:15Z"
     },
     {
       "brand": "Pertamina",
@@ -50,7 +50,7 @@
       "effective_at": "Update as of June 1, 2026",
       "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T09:26:00Z"
+      "scraped_at": "2026-06-03T03:37:15Z"
     },
     {
       "brand": "Pertamina",
@@ -61,7 +61,7 @@
       "effective_at": "Update as of June 1, 2026",
       "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T09:26:00Z"
+      "scraped_at": "2026-06-03T03:37:15Z"
     },
     {
       "brand": "Pertamina",
@@ -72,7 +72,7 @@
       "effective_at": "Update as of June 1, 2026",
       "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T09:26:00Z"
+      "scraped_at": "2026-06-03T03:37:15Z"
     },
     {
       "brand": "Pertamina",
@@ -83,7 +83,7 @@
       "effective_at": "Update as of June 1, 2026",
       "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T09:26:00Z"
+      "scraped_at": "2026-06-03T03:37:15Z"
     },
     {
       "brand": "Pertamina",
@@ -94,7 +94,7 @@
       "effective_at": "Update as of June 1, 2026",
       "source_url": "https://pertaminapatraniaga.com/api/api/v1/post/get-by-slug/page/harga-terbaru-bbm?language=id",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T09:26:00Z"
+      "scraped_at": "2026-06-03T03:37:15Z"
     },
     {
       "brand": "Shell",
@@ -105,29 +105,29 @@
       "effective_at": "01 Juni 2026",
       "source_url": "https://www.shell.co.id/in_id/pengendara-bermotor/bahan-bakar-shell/harga-bahan-bakar-shell.model.json",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T09:26:01Z"
+      "scraped_at": "2026-06-03T03:37:15Z"
     },
     {
       "brand": "BP",
       "fuel_name": "BP Ultimate",
       "fuel_type": "RON_95",
-      "price": 12930,
+      "price": 17240,
       "location": "Jabodetabek",
-      "effective_at": "1 Juni 2026",
+      "effective_at": "10 Juni 2026",
       "source_url": "https://www.bp.com/id_id/indonesia/home/produk-dan-layanan/spbu/harga.html",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T09:26:02Z"
+      "scraped_at": "2026-06-10T00:00:00Z"
     },
     {
       "brand": "BP",
       "fuel_name": "BP 92",
       "fuel_type": "RON_92",
-      "price": 12390,
+      "price": 16670,
       "location": "Jabodetabek",
-      "effective_at": "1 Juni 2026",
+      "effective_at": "10 Juni 2026",
       "source_url": "https://www.bp.com/id_id/indonesia/home/produk-dan-layanan/spbu/harga.html",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T09:26:02Z"
+      "scraped_at": "2026-06-10T00:00:00Z"
     },
     {
       "brand": "BP",
@@ -135,10 +135,43 @@
       "fuel_type": "DIESEL_CN_51",
       "price": 25060,
       "location": "Jabodetabek",
-      "effective_at": "1 Juni 2026",
+      "effective_at": "10 Juni 2026",
       "source_url": "https://www.bp.com/id_id/indonesia/home/produk-dan-layanan/spbu/harga.html",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T09:26:02Z"
+      "scraped_at": "2026-06-10T00:00:00Z"
+    },
+    {
+      "brand": "Vivo",
+      "fuel_name": "Revvo 92",
+      "fuel_type": "RON_92",
+      "price": 0,
+      "location": "Jabodetabek",
+      "effective_at": "10 Juni 2026",
+      "source_url": "https://finance.detik.com/energi/d-8526287/harga-bbm-di-spbu-vivo-juga-ikut-naik-ini-rinciannya",
+      "source_status": "media_observation_detik",
+      "scraped_at": "2026-06-10T08:28:00Z"
+    },
+    {
+      "brand": "Vivo",
+      "fuel_name": "Revvo 95",
+      "fuel_type": "RON_95",
+      "price": 17240,
+      "location": "Jabodetabek",
+      "effective_at": "10 Juni 2026",
+      "source_url": "https://finance.detik.com/energi/d-8526287/harga-bbm-di-spbu-vivo-juga-ikut-naik-ini-rinciannya",
+      "source_status": "media_observation_detik",
+      "scraped_at": "2026-06-10T08:28:00Z"
+    },
+    {
+      "brand": "Vivo",
+      "fuel_name": "Diesel Primus Plus",
+      "fuel_type": "DIESEL_CN_51",
+      "price": 25060,
+      "location": "Jabodetabek",
+      "effective_at": "10 Juni 2026",
+      "source_url": "https://finance.detik.com/energi/d-8526287/harga-bbm-di-spbu-vivo-juga-ikut-naik-ini-rinciannya",
+      "source_status": "media_observation_detik",
+      "scraped_at": "2026-06-10T08:28:00Z"
     }
   ],
   "stations": [
@@ -154,7 +187,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -168,7 +201,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -182,7 +215,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -196,7 +229,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -210,7 +243,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -224,7 +257,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -238,7 +271,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -252,7 +285,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -266,7 +299,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -280,7 +313,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -294,7 +327,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -308,7 +341,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -322,7 +355,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -336,7 +369,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -350,7 +383,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -364,7 +397,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     },
     {
       "brand": "Vivo",
@@ -378,7 +411,7 @@
         "RON_95": "HABIS"
       },
       "source_url": "https://spbuvivo-ketersediaanstok.azurewebsites.net",
-      "scraped_at": "2026-06-03T09:26:03Z"
+      "scraped_at": "2026-06-03T03:37:18Z"
     }
   ],
   "errors": []

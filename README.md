@@ -29,7 +29,7 @@ Sumber harga yang digunakan:
 - Pertamina Patra Niaga / MyPertamina
 - Shell Indonesia
 - BP Indonesia
-- Vivo Energy Indonesia / rilis resmi yang terverifikasi
+- Vivo: observasi Detik sementara, karena belum ada halaman harga resmi publik yang stabil
 
 ## Tech Stack
 

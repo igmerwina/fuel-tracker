@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-11T00:00:00Z",
+  "generated_at": "2026-06-10T00:00:00Z",
   "regions": [
     "Jakarta Pusat",
     "Jakarta Selatan",
@@ -98,28 +98,6 @@
     },
     {
       "brand": "Shell",
-      "fuel_name": "Shell Super",
-      "fuel_type": "RON_92",
-      "price": 13290,
-      "location": "DKI Jakarta",
-      "effective_at": "10 Juni 2026",
-      "source_url": "https://www.shell.co.id/in_id/pengendara-bermotor/bahan-bakar-shell/harga-bahan-bakar-shell.html",
-      "source_status": "fallback",
-      "scraped_at": "2026-06-10T00:00:00Z"
-    },
-    {
-      "brand": "Shell",
-      "fuel_name": "Shell V-Power",
-      "fuel_type": "RON_95",
-      "price": 13990,
-      "location": "DKI Jakarta",
-      "effective_at": "10 Juni 2026",
-      "source_url": "https://www.shell.co.id/in_id/pengendara-bermotor/bahan-bakar-shell/harga-bahan-bakar-shell.html",
-      "source_status": "fallback",
-      "scraped_at": "2026-06-10T00:00:00Z"
-    },
-    {
-      "brand": "Shell",
       "fuel_name": "Shell V-Power Diesel",
       "fuel_type": "DIESEL_CN_51",
       "price": 24490,
@@ -133,67 +111,67 @@
       "brand": "BP",
       "fuel_name": "BP Ultimate",
       "fuel_type": "RON_95",
-      "price": 12930,
+      "price": 17240,
       "location": "Jabodetabek",
-      "effective_at": "1 Juni 2026",
+      "effective_at": "10 Juni 2026",
       "source_url": "https://www.bp.com/id_id/indonesia/home/produk-dan-layanan/spbu/harga.html",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T03:37:16Z"
+      "scraped_at": "2026-06-10T00:00:00Z"
     },
     {
       "brand": "BP",
       "fuel_name": "BP 92",
       "fuel_type": "RON_92",
-      "price": 12390,
+      "price": 16670,
       "location": "Jabodetabek",
-      "effective_at": "1 Juni 2026",
+      "effective_at": "10 Juni 2026",
       "source_url": "https://www.bp.com/id_id/indonesia/home/produk-dan-layanan/spbu/harga.html",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T03:37:16Z"
+      "scraped_at": "2026-06-10T00:00:00Z"
     },
     {
       "brand": "BP",
       "fuel_name": "BP Ultimate Diesel",
       "fuel_type": "DIESEL_CN_51",
-      "price": 29890,
+      "price": 25060,
       "location": "Jabodetabek",
-      "effective_at": "8 Mei 2026",
+      "effective_at": "10 Juni 2026",
       "source_url": "https://www.bp.com/id_id/indonesia/home/produk-dan-layanan/spbu/harga.html",
       "source_status": "scraped",
-      "scraped_at": "2026-06-03T03:37:16Z"
+      "scraped_at": "2026-06-10T00:00:00Z"
     },
     {
       "brand": "Vivo",
       "fuel_name": "Revvo 92",
       "fuel_type": "RON_92",
-      "price": 12390,
+      "price": 0,
       "location": "Jabodetabek",
-      "effective_at": "1 Maret 2026",
-      "source_url": "https://megapolitan.antaranews.com/berita/506350/harga-bbm-spbu-vivo-naik-mulai-maret-revvo-92-jadi-rp12390-per-liter",
-      "source_status": "verified_from_official_instagram",
-      "scraped_at": "2026-06-05T00:00:00Z"
+      "effective_at": "10 Juni 2026",
+      "source_url": "https://finance.detik.com/energi/d-8526287/harga-bbm-di-spbu-vivo-juga-ikut-naik-ini-rinciannya",
+      "source_status": "media_observation_detik",
+      "scraped_at": "2026-06-10T08:28:00Z"
     },
     {
       "brand": "Vivo",
       "fuel_name": "Revvo 95",
       "fuel_type": "RON_95",
-      "price": 12930,
+      "price": 17240,
       "location": "Jabodetabek",
-      "effective_at": "1 Maret 2026",
-      "source_url": "https://www.haloindonesia.co.id/harga-bbm-vivo-1-maret-2026",
-      "source_status": "verified_from_official_instagram",
-      "scraped_at": "2026-06-05T00:00:00Z"
+      "effective_at": "10 Juni 2026",
+      "source_url": "https://finance.detik.com/energi/d-8526287/harga-bbm-di-spbu-vivo-juga-ikut-naik-ini-rinciannya",
+      "source_status": "media_observation_detik",
+      "scraped_at": "2026-06-10T08:28:00Z"
     },
     {
       "brand": "Vivo",
       "fuel_name": "Diesel Primus Plus",
       "fuel_type": "DIESEL_CN_51",
-      "price": 14610,
+      "price": 25060,
       "location": "Jabodetabek",
-      "effective_at": "1 Maret 2026",
-      "source_url": "https://megapolitan.antaranews.com/berita/506350/harga-bbm-spbu-vivo-naik-mulai-maret-revvo-92-jadi-rp12390-per-liter",
-      "source_status": "verified_from_official_instagram",
-      "scraped_at": "2026-06-05T00:00:00Z"
+      "effective_at": "10 Juni 2026",
+      "source_url": "https://finance.detik.com/energi/d-8526287/harga-bbm-di-spbu-vivo-juga-ikut-naik-ini-rinciannya",
+      "source_status": "media_observation_detik",
+      "scraped_at": "2026-06-10T08:28:00Z"
     }
   ],
   "stations": [

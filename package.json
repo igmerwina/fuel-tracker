@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS=--no-deprecation vite",
     "build": "NODE_OPTIONS=--no-deprecation vue-tsc -b && NODE_OPTIONS=--no-deprecation vite build",
-    "build:vercel": "vue-tsc -b && vite build",
+    "build:vercel": "NODE_OPTIONS=--no-deprecation vue-tsc -b && NODE_OPTIONS=--no-deprecation vite build",
     "preview": "NODE_OPTIONS=--no-deprecation vite preview"
   },
   "dependencies": {

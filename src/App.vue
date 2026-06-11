@@ -13,7 +13,7 @@ import type {
   StationResult,
 } from './types/index';
 import { fuelStations, fuelTypes, JAKARTA_CENTER } from './data/stations';
-import { fetchRealtimePrices, refreshRealtimePrices } from './services/prices';
+import { refreshRealtimePrices } from './services/prices';
 
 const stations = ref<FuelStation[]>(fuelStations);
 const favoriteIds = ref<string[]>([]);
@@ -25,11 +25,12 @@ const showCheapestCard = ref(true);
 const userLocation = ref(JAKARTA_CENTER);
 const locationStatus = ref<'idle' | 'ok' | 'outside' | 'denied'>('idle');
 const isRefreshingPrices = ref(false);
+const isInitialPriceLoading = ref(true);
 const priceToast = ref<{ type: 'success' | 'error'; message: string } | null>(null);
 const filterState = ref<FilterState>({
   query: '',
   region: '',
-  brand: '',
+  brand: 'Pertamina',
   fuelType: 'RON_92',
 });
 
@@ -97,7 +98,7 @@ const stationResults = computed<StationResult[]>(() => {
       }
       if (filterState.value.region && station.region !== filterState.value.region) return false;
       if (filterState.value.brand && station.brand !== filterState.value.brand) return false;
-      if (!station.prices.some((price) => price.type === activeFuel)) return false;
+      if (!station.prices.some((price) => price.type === activeFuel && price.price > 0)) return false;
       return true;
     });
   const cheapest = candidates
@@ -157,7 +158,7 @@ const updateQuery = (query: string) => {
 };
 
 const resetFilters = () => {
-  filterState.value = { query: '', region: '', brand: '', fuelType: 'RON_92' };
+  filterState.value = { query: '', region: '', brand: 'Pertamina', fuelType: 'RON_92' };
   sortMode.value = 'cheapest';
   priceDay.value = 'today';
   showCheapestCard.value = true;
@@ -194,7 +195,7 @@ const showPriceToast = (type: 'success' | 'error', message: string) => {
   }, 2800);
 };
 
-const applyPriceCache = (cache: Awaited<ReturnType<typeof fetchRealtimePrices>>) => {
+const applyPriceCache = (cache: Awaited<ReturnType<typeof refreshRealtimePrices>>) => {
   if (!cache?.prices.length) return;
 
   const priceByBrandAndType = new globalThis.Map<string, number>();
@@ -216,7 +217,7 @@ const applyPriceCache = (cache: Awaited<ReturnType<typeof fetchRealtimePrices>>)
 };
 
 const applyRealtimePrices = async () => {
-  const cache = await fetchRealtimePrices();
+  const cache = await refreshRealtimePrices();
   applyPriceCache(cache);
 };
 
@@ -256,7 +257,9 @@ onMounted(() => {
   document.documentElement.classList.remove('dark');
   localStorage.removeItem('darkMode');
   initUserLocation();
-  void applyRealtimePrices();
+  void applyRealtimePrices().finally(() => {
+    isInitialPriceLoading.value = false;
+  });
 });
 </script>
 
@@ -335,6 +338,18 @@ onMounted(() => {
         :class="priceToast.type === 'success' ? 'bg-emerald-500' : 'bg-rose-500'"
       >
         {{ priceToast.message }}
+      </div>
+
+      <div
+        v-if="isInitialPriceLoading || isRefreshingPrices"
+        class="fixed inset-0 z-[1600] grid place-items-center bg-white/45 backdrop-blur-md"
+        role="status"
+        aria-live="polite"
+      >
+        <div class="flex items-center gap-3 rounded-2xl bg-white/95 px-5 py-4 text-sm font-black text-slate-800 shadow-2xl shadow-slate-950/15 ring-1 ring-white/80">
+          <i class="fa-solid fa-gas-pump animate-pulse text-blue-600" aria-hidden="true"></i>
+          <span>Memuat harga BBM terbaru...</span>
+        </div>
       </div>
 
       <section class="grid min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-[minmax(0,3fr)_minmax(320px,1fr)] lg:gap-3">
