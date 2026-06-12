@@ -31,6 +31,9 @@ const selectedStation = ref<StationResult | null>(null);
 const mapReady = ref(false);
 let map: L.Map | null = null;
 let markerLayer: L.LayerGroup | null = null;
+const landingCenter: L.LatLngExpression = [-6.1856, 106.8272];
+const landingZoom = 11;
+const stationZoom = 15;
 
 const activePrice = (station: StationResult) =>
   station.prices.find((price) => price.type === props.activeFuel)?.price ?? station.selectedPrice;
@@ -172,7 +175,7 @@ const initMap = () => {
   map = L.map(mapContainer.value, {
     maxBounds: jakartaBounds,
     maxBoundsViscosity: 1,
-    minZoom: 11,
+    minZoom: landingZoom,
     zoomControl: false,
     worldCopyJump: false,
   });
@@ -182,21 +185,21 @@ const initMap = () => {
     attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
     bounds: jakartaBounds,
     maxZoom: 19,
-    minZoom: 11,
+    minZoom: landingZoom,
     noWrap: true,
   }).addTo(map);
 
   markerLayer = L.layerGroup().addTo(map);
   map.on('zoomend', syncMarkers);
   map.setMaxBounds(jakartaBounds);
-  map.setView([-6.1856, 106.8272], 15);
+  map.setView(landingCenter, landingZoom);
   syncMarkers();
   mapReady.value = true;
 };
 
 const flyToStation = (station: StationResult) => {
   if (!map) return;
-  map.flyTo([station.latitude, station.longitude], 15, { duration: 0.9 });
+  map.flyTo([station.latitude, station.longitude], stationZoom, { duration: 0.9 });
   selectedStation.value = station;
 };
 
