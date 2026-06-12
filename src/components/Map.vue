@@ -32,7 +32,7 @@ const mapReady = ref(false);
 let map: L.Map | null = null;
 let markerLayer: L.LayerGroup | null = null;
 const landingCenter: L.LatLngExpression = [-6.1856, 106.8272];
-const landingZoom = 11;
+const landingZoom = 12;
 const stationZoom = 15;
 
 const activePrice = (station: StationResult) =>
@@ -193,6 +193,14 @@ const initMap = () => {
   map.on('zoomend', syncMarkers);
   map.setMaxBounds(jakartaBounds);
   map.setView(landingCenter, landingZoom);
+  map.setMinZoom(landingZoom);
+  map.setZoom(landingZoom, { animate: false });
+  window.setTimeout(() => {
+    map?.invalidateSize();
+    if (map && map.getZoom() < landingZoom) {
+      map.setZoom(landingZoom, { animate: false });
+    }
+  }, 250);
   syncMarkers();
   mapReady.value = true;
 };
