@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { FilterState, FuelBrand, FuelType, SortMode } from '../types';
+import type { FilterState, FuelBrand, SortMode } from '../types';
 import { brands, fuelTypes, regions } from '../data/stations';
 
-const props = defineProps<{
+defineProps<{
   filters: FilterState;
   sortMode: SortMode;
 }>();
@@ -12,61 +12,61 @@ const emit = defineEmits<{
   'update-sort': [value: SortMode];
 }>();
 
-const fuelLabel = (fuel: FuelType) => {
-  if (fuel === 'RON_92') return 'Pertamax';
-  if (fuel === 'RON_90') return 'Pertalite';
-  return fuelTypes.find((item) => item.id === fuel)?.label ?? fuel;
-};
+const selectClass =
+  'h-9 shrink-0 rounded-lg border border-garis bg-white pl-3 pr-8 text-sm font-medium outline-none transition hover:border-aspal-soft focus-visible:ring-2 focus-visible:ring-teal';
 </script>
 
 <template>
-  <section class="flex min-h-10 items-center gap-1.5 overflow-x-auto rounded-xl bg-white px-2 py-1.5 shadow-sm shadow-slate-200/70 ring-1 ring-slate-100 md:min-h-12 md:gap-2 md:rounded-2xl md:px-2.5 md:py-2">
-    <label class="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full bg-blue-600 px-2.5 text-xs font-black text-white shadow-sm shadow-blue-600/20 transition hover:bg-blue-700 md:h-9 md:gap-2 md:px-3 md:text-sm">
-      <i class="fa-solid fa-gas-pump text-[10px] md:text-xs" aria-hidden="true"></i>
-      <select
-        :value="filters.fuelType"
-        class="max-w-[100px] appearance-none bg-transparent outline-none md:max-w-[132px]"
-        aria-label="Jenis BBM"
-        @change="emit('update-filters', { fuelType: ($event.target as HTMLSelectElement).value as FuelType })"
+  <div class="flex shrink-0 items-center gap-2 overflow-x-auto border-b border-garis bg-white px-3 py-2 md:px-5">
+    <div class="flex shrink-0 rounded-lg bg-trotoar p-1" role="radiogroup" aria-label="Jenis BBM">
+      <button
+        v-for="fuel in fuelTypes"
+        :key="fuel.id"
+        type="button"
+        role="radio"
+        :aria-checked="filters.fuelType === fuel.id"
+        class="h-7 shrink-0 rounded-md px-3 text-sm whitespace-nowrap transition"
+        :class="filters.fuelType === fuel.id ? 'bg-teal font-semibold text-white' : 'text-aspal-soft hover:text-aspal'"
+        :title="fuel.common"
+        @click="emit('update-filters', { fuelType: fuel.id })"
       >
-        <option v-for="fuel in fuelTypes" :key="fuel.id" :value="fuel.id">{{ fuelLabel(fuel.id) }}</option>
-      </select>
-    </label>
+        {{ fuel.label }}
+      </button>
+    </div>
 
-    <label class="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full bg-slate-50 px-2.5 text-xs font-black text-slate-700 ring-1 ring-slate-200 transition hover:bg-white hover:ring-slate-300 md:h-9 md:gap-2 md:px-3 md:text-sm">
-      <i class="fa-solid fa-building-circle-check text-[10px] text-slate-500 md:text-xs" aria-hidden="true"></i>
-      <select
-        :value="filters.brand"
-        class="max-w-[100px] appearance-none bg-transparent outline-none md:max-w-[128px]"
-        aria-label="Merek"
-        @change="emit('update-filters', { brand: ($event.target as HTMLSelectElement).value as FuelBrand | '' })"
-      >
-        <option value="">Semua merek</option>
-        <option v-for="brand in brands" :key="brand" :value="brand">{{ brand }}</option>
-      </select>
-    </label>
-
-    <label class="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full bg-slate-50 px-2.5 text-xs font-black text-slate-700 ring-1 ring-slate-200 transition hover:bg-white hover:ring-slate-300 md:h-9 md:gap-2 md:px-3 md:text-sm">
-      <i class="fa-solid fa-location-dot text-[10px] text-slate-500 md:text-xs" aria-hidden="true"></i>
-      <select
-        :value="filters.region"
-        class="max-w-[110px] appearance-none bg-transparent outline-none md:max-w-[150px]"
-        aria-label="Wilayah"
-        @change="emit('update-filters', { region: ($event.target as HTMLSelectElement).value as FilterState['region'] })"
-      >
-        <option value="">Semua wilayah</option>
-        <option v-for="region in regions" :key="region" :value="region">{{ region }}</option>
-      </select>
-    </label>
-
-    <button
-      type="button"
-      class="ml-auto inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-2.5 text-xs font-black transition focus:outline-none focus:ring-2 focus:ring-blue-600 md:h-9 md:gap-2 md:px-3 md:text-sm"
-      :class="sortMode === 'cheapest' ? 'bg-slate-950 text-white shadow-sm shadow-slate-950/20' : 'bg-slate-50 text-slate-700 ring-1 ring-slate-200 hover:bg-white hover:ring-slate-300'"
-      @click="emit('update-sort', sortMode === 'cheapest' ? 'nearest' : 'cheapest')"
+    <select
+      :value="filters.brand"
+      :class="selectClass"
+      aria-label="Merek"
+      @change="emit('update-filters', { brand: ($event.target as HTMLSelectElement).value as FuelBrand | '' })"
     >
-      <i class="fa-solid fa-sliders" aria-hidden="true"></i>
-      <span class="hidden md:inline">{{ sortMode === 'cheapest' ? 'Harga terendah' : 'Jarak terdekat' }}</span>
-    </button>
-  </section>
+      <option value="">Semua merek</option>
+      <option v-for="brand in brands" :key="brand" :value="brand">{{ brand }}</option>
+    </select>
+
+    <select
+      :value="filters.region"
+      :class="selectClass"
+      aria-label="Wilayah"
+      @change="emit('update-filters', { region: ($event.target as HTMLSelectElement).value as FilterState['region'] })"
+    >
+      <option value="">Seluruh Jakarta</option>
+      <option v-for="region in regions" :key="region" :value="region">{{ region }}</option>
+    </select>
+
+    <div class="ml-auto flex shrink-0 rounded-lg bg-trotoar p-1" role="radiogroup" aria-label="Urutkan">
+      <button
+        v-for="mode in (['cheapest', 'nearest'] as const)"
+        :key="mode"
+        type="button"
+        role="radio"
+        :aria-checked="sortMode === mode"
+        class="h-7 rounded-md px-3 text-sm whitespace-nowrap transition"
+        :class="sortMode === mode ? 'bg-white font-semibold text-petrol shadow-sm' : 'text-aspal-soft hover:text-aspal'"
+        @click="emit('update-sort', mode)"
+      >
+        {{ mode === 'cheapest' ? 'Termurah' : 'Terdekat' }}
+      </button>
+    </div>
+  </div>
 </template>

@@ -18,9 +18,7 @@ import { refreshRealtimePrices } from './services/prices';
 const stations = ref<FuelStation[]>(fuelStations);
 const favoriteIds = ref<string[]>([]);
 const sortMode = ref<SortMode>('cheapest');
-const priceDay = ref<'today' | 'tomorrow'>('today');
 const selectedStationId = ref<string>('');
-const navigatingStationId = ref<string>('');
 const showCheapestCard = ref(true);
 const userLocation = ref(JAKARTA_CENTER);
 const locationStatus = ref<'idle' | 'ok' | 'outside' | 'denied'>('idle');
@@ -146,7 +144,8 @@ const relativeUpdated = computed(() => {
   const minutes = Math.max(1, Math.round((Date.now() - lastUpdated.value.getTime()) / 60000));
   if (minutes < 60) return `${minutes} menit lalu`;
   const hours = Math.round(minutes / 60);
-  return `${hours} jam lalu`;
+  if (hours < 24) return `${hours} jam lalu`;
+  return lastUpdated.value.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 });
 
 const updateFilters = (next: Partial<FilterState>) => {
@@ -157,10 +156,17 @@ const updateQuery = (query: string) => {
   updateFilters({ query });
 };
 
+const activeFuelLabel = computed(() => fuelTypes.find((fuel) => fuel.id === filterState.value.fuelType)?.label ?? 'RON 92');
+
+const locationNote = computed(() => {
+  if (locationStatus.value === 'ok') return 'Jarak dari lokasimu';
+  if (locationStatus.value === 'outside') return 'Kamu di luar Jakarta, jarak dari Monas';
+  return 'Jarak dari Monas';
+});
+
 const resetFilters = () => {
   filterState.value = { query: '', region: '', brand: 'Pertamina', fuelType: 'RON_92' };
   sortMode.value = 'cheapest';
-  priceDay.value = 'today';
   showCheapestCard.value = true;
 };
 
@@ -174,11 +180,7 @@ const selectStation = (station: StationResult | null) => {
 };
 
 const startNavigation = (station: StationResult) => {
-  navigatingStationId.value = station.id;
-  window.setTimeout(() => {
-    window.open(station.googleMapsUrl, '_blank', 'noopener,noreferrer');
-    navigatingStationId.value = '';
-  }, 450);
+  window.open(station.googleMapsUrl, '_blank', 'noopener,noreferrer');
 };
 
 const toggleFavorite = (stationId: string) => {
@@ -227,7 +229,7 @@ const refreshPrices = async () => {
   const cache = await refreshRealtimePrices();
   applyPriceCache(cache);
   isRefreshingPrices.value = false;
-  showPriceToast(cache?.prices.length ? 'success' : 'error', cache?.prices.length ? 'Data harga berhasil diperbarui' : 'Gagal memperbarui data harga');
+  showPriceToast(cache?.prices.length ? 'success' : 'error', cache?.prices.length ? 'Harga diperbarui' : 'Harga belum bisa diperbarui. Server harga tidak merespons, coba lagi sebentar.');
 };
 
 const initUserLocation = () => {
@@ -264,156 +266,101 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-100 text-slate-950">
+  <div class="flex h-full flex-col bg-trotoar text-aspal">
     <Header
       :query="filterState.query"
-      :station-count="stationResults.length"
       :last-updated="relativeUpdated"
+      :is-refreshing="isRefreshingPrices"
       @update-query="updateQuery"
+      @refresh="refreshPrices"
     />
 
-    <main class="mx-auto flex h-[calc(100vh-60px)] max-w-[1800px] flex-col gap-2 p-1.5 md:h-[calc(100vh-72px)] md:gap-3 md:p-3">
-      <FilterBar
-        :filters="filterState"
-        :sort-mode="sortMode"
-        @update-filters="updateFilters"
-        @update-sort="sortMode = $event"
-      />
+    <FilterBar
+      :filters="filterState"
+      :sort-mode="sortMode"
+      @update-filters="updateFilters"
+      @update-sort="sortMode = $event"
+    />
 
-      <section class="flex flex-wrap items-center gap-1.5 rounded-xl bg-white px-2.5 py-1.5 text-[11px] font-black text-slate-600 shadow-sm shadow-slate-200/60 ring-1 ring-slate-100 md:gap-2 md:rounded-2xl md:px-3 md:py-2 md:text-xs">
-        <div class="inline-flex rounded-full bg-slate-100 p-0.5 md:p-1">
-          <button
-            type="button"
-            class="h-7 rounded-full px-2.5 text-[11px] transition md:h-8 md:px-3 md:text-xs"
-            :class="priceDay === 'today' ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/20' : 'text-slate-600'"
-            @click="priceDay = 'today'"
-          >
-            Hari ini
-          </button>
-          <button
-            type="button"
-            class="h-7 rounded-full px-2.5 text-[11px] transition md:h-8 md:px-3 md:text-xs"
-            :class="priceDay === 'tomorrow' ? 'bg-amber-500 text-white shadow-sm shadow-amber-500/20' : 'text-slate-400'"
-            title="Data harga besok belum tersedia"
-            @click="priceDay = 'tomorrow'"
-          >
-            Besok
-          </button>
-        </div>
-        <span class="hidden sm:inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1.5 text-emerald-700 md:px-3 md:py-2">
-          <i class="fa-solid fa-lock" aria-hidden="true"></i>
-          Harga brand-level
-        </span>
-        <span
-          v-if="locationStatus === 'ok'"
-          class="hidden sm:inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1.5 text-blue-700 md:px-3 md:py-2"
+    <main class="grid min-h-0 flex-1 grid-cols-1 grid-rows-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_420px]">
+      <div class="relative min-h-0">
+        <article
+          v-if="cheapestStation && showCheapestCard"
+          class="absolute top-3 left-3 z-[700] w-[min(340px,calc(100%-24px))] rounded-xl bg-petrol-deep p-3 md:p-4 text-white shadow-[0_12px_32px_rgb(30_35_40/0.35)] md:top-4 md:left-4"
+          aria-label="SPBU termurah"
         >
-          <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
-          GPS aktif
-        </span>
-        <span
-          v-else-if="locationStatus === 'outside'"
-          class="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2 py-1 text-[10px] text-rose-700 md:px-3 md:py-2 md:text-xs"
-        >
-          <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-          Luar Jakarta
-        </span>
-        <span v-if="priceDay === 'tomorrow'" class="rounded-full bg-amber-50 px-2 py-1 text-[10px] text-amber-700 md:px-3 md:py-2 md:text-xs">
-          Besok blm tersedia
-        </span>
-        <button
-          type="button"
-          class="ml-auto inline-flex h-7 items-center gap-1.5 rounded-full bg-blue-600 px-2.5 text-[11px] text-white shadow-sm shadow-blue-600/20 transition hover:bg-blue-700 disabled:cursor-wait disabled:opacity-75 md:h-9 md:gap-2 md:px-3 md:text-xs"
-          :disabled="isRefreshingPrices"
-          @click="refreshPrices"
-        >
-          <i class="fa-solid fa-rotate-right text-[10px] md:text-xs" :class="isRefreshingPrices ? 'animate-spin' : ''" aria-hidden="true"></i>
-          <span class="hidden sm:inline">{{ isRefreshingPrices ? 'Memuat...' : 'Refresh' }}</span>
-        </button>
-      </section>
-
-      <div
-        v-if="priceToast"
-        class="fixed right-4 top-20 z-[1400] rounded-2xl px-4 py-3 text-sm font-black text-white shadow-2xl"
-        :class="priceToast.type === 'success' ? 'bg-emerald-500' : 'bg-rose-500'"
-      >
-        {{ priceToast.message }}
-      </div>
-
-      <div
-        v-if="isInitialPriceLoading || isRefreshingPrices"
-        class="fixed inset-0 z-[1600] grid place-items-center bg-white/45 backdrop-blur-md"
-        role="status"
-        aria-live="polite"
-      >
-        <div class="flex items-center gap-3 rounded-2xl bg-white/95 px-5 py-4 text-sm font-black text-slate-800 shadow-2xl shadow-slate-950/15 ring-1 ring-white/80">
-          <i class="fa-solid fa-gas-pump animate-pulse text-blue-600" aria-hidden="true"></i>
-          <span>Memuat harga BBM terbaru...</span>
-        </div>
-      </div>
-
-      <section class="grid min-h-0 flex-1 grid-cols-1 gap-2 lg:grid-cols-[minmax(0,3fr)_minmax(320px,1fr)] lg:gap-3">
-        <div class="relative min-h-[calc(100vh-120px)] overflow-hidden rounded-[10px] bg-white shadow-lg shadow-slate-200/70 lg:min-h-0 lg:rounded-[12px]">
-          <article
-            v-if="cheapestStation && showCheapestCard"
-            class="absolute left-2 right-2 top-2 z-[700] max-w-[320px] rounded-xl bg-white/95 p-2.5 shadow-xl shadow-slate-950/12 ring-1 ring-white/70 backdrop-blur md:left-3 md:right-auto md:top-3 md:max-w-[360px] md:rounded-2xl md:p-3"
-          >
-            <div class="flex items-start justify-between gap-2 md:gap-3">
-              <p class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-emerald-700 md:gap-2 md:px-2.5 md:py-1 md:text-[11px]">
-                <i class="fa-solid fa-fire-flame-curved" aria-hidden="true"></i>
-                Terbaik hari ini
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-[13px] text-white/70">
+              {{ activeFuelLabel }} termurah
+              <span v-if="isInitialPriceLoading" class="text-lampu/80">, memuat harga terbaru</span>
+            </p>
+            <button
+              type="button"
+              class="-mt-1 -mr-1 grid h-7 w-7 shrink-0 place-items-center rounded-md text-white/60 transition hover:bg-white/10 hover:text-white"
+              aria-label="Sembunyikan papan harga"
+              @click="showCheapestCard = false"
+            >
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </div>
+          <p class="price mt-1 text-[40px] leading-[0.9] md:text-[56px] font-extrabold text-lampu">
+            {{ cheapestStation.selectedPrice.toLocaleString('id-ID') }}<span class="ml-1 text-lg font-semibold text-white/60">/liter</span>
+          </p>
+          <div class="mt-2 flex items-end justify-between gap-3 md:mt-3">
+            <div class="min-w-0 text-sm">
+              <p class="truncate font-semibold">{{ cheapestStation.name }}</p>
+              <p class="text-white/60">
+                {{ cheapestStation.brand }}, {{ cheapestStation.distanceKm.toFixed(1) }} km
               </p>
-              <button
-                type="button"
-                class="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-900 md:h-7 md:w-7"
-                aria-label="Tutup kartu harga terbaik"
-                @click="showCheapestCard = false"
-              >
-                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-              </button>
             </div>
-            <div class="mt-1.5 flex items-end justify-between gap-2 md:mt-2 md:gap-3">
-              <div class="min-w-0">
-                <h2 class="truncate text-xs font-black text-slate-950 md:text-sm">{{ cheapestStation.name }}</h2>
-                <p class="mt-0.5 text-lg font-black tracking-tight text-slate-950 md:mt-0.5 md:text-2xl">
-                  Rp{{ cheapestStation.selectedPrice.toLocaleString('id-ID') }}<span class="text-xs text-slate-500 md:text-sm">/L</span>
-                </p>
-                <p class="mt-0.5 text-[11px] font-bold text-slate-500 md:text-xs">
-                  {{ cheapestStation.distanceKm.toFixed(1) }} km · Hemat Rp{{ cheapestStation.savingsPerLiter.toLocaleString('id-ID') }}/L
-                </p>
-              </div>
-              <button
-                type="button"
-                class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 md:h-10 md:w-10"
-                aria-label="Mulai navigasi"
-                @click="startNavigation(cheapestStation)"
-              >
-                <i v-if="navigatingStationId === cheapestStation.id" class="fa-solid fa-spinner animate-spin" aria-hidden="true"></i>
-                <i v-else class="fa-solid fa-route" aria-hidden="true"></i>
-              </button>
-            </div>
-          </article>
-          <Map
-            ref="mapRef"
-            :stations="stationResults"
-            :active-fuel="filterState.fuelType || 'RON_92'"
-            :average-price="averageSelectedPrice"
-            :selected-station-id="selectedStationId"
-            @select-station="selectStation"
-          />
-        </div>
+            <button
+              type="button"
+              class="inline-flex h-9 shrink-0 items-center gap-2 rounded-lg bg-lampu px-3 text-sm font-bold text-aspal transition hover:brightness-95 focus-visible:outline-white"
+              @click="startNavigation(cheapestStation)"
+            >
+              <i class="fa-solid fa-diamond-turn-right text-xs" aria-hidden="true"></i>
+              Rute
+            </button>
+          </div>
+        </article>
 
-        <StationList
+        <button
+          v-else-if="cheapestStation"
+          type="button"
+          class="absolute top-3 left-3 z-[700] inline-flex h-9 items-center gap-2 rounded-lg bg-petrol-deep px-3 text-sm font-semibold text-white md:top-4 md:left-4"
+          @click="showCheapestCard = true"
+        >
+          Termurah <span class="price text-base text-lampu">{{ cheapestStation.selectedPrice.toLocaleString('id-ID') }}</span>
+        </button>
+
+        <Map
+          ref="mapRef"
           :stations="stationResults"
           :active-fuel="filterState.fuelType || 'RON_92'"
-          :sort-mode="sortMode"
           :selected-station-id="selectedStationId"
-          @reset-filters="resetFilters"
-          @flyto="handleFlyTo"
-          @toggle-favorite="toggleFavorite"
-          @start-navigation="startNavigation"
+          @select-station="selectStation"
         />
-      </section>
+      </div>
+
+      <StationList
+        :stations="stationResults"
+        :sort-mode="sortMode"
+        :selected-station-id="selectedStationId"
+        :location-note="locationNote"
+        @reset-filters="resetFilters"
+        @flyto="handleFlyTo"
+        @toggle-favorite="toggleFavorite"
+        @start-navigation="startNavigation"
+      />
     </main>
+
+    <div
+      v-if="priceToast"
+      class="fixed bottom-6 left-1/2 z-[1400] max-w-[calc(100%-32px)] -translate-x-1/2 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-lg lg:bottom-8"
+      :class="priceToast.type === 'success' ? 'bg-teal' : 'bg-[#a3292f]'"
+      role="status"
+    >
+      {{ priceToast.message }}
+    </div>
   </div>
 </template>
