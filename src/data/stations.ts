@@ -12,12 +12,12 @@ export const regions = ['Jakarta Pusat', 'Jakarta Selatan', 'Jakarta Barat', 'Ja
 export const brands = ['Pertamina', 'Shell', 'Vivo', 'BP'] as const;
 
 export const fuelTypes = [
-  { id: 'RON_90', label: 'RON 90' },
-  { id: 'RON_92', label: 'RON 92' },
-  { id: 'RON_95', label: 'RON 95' },
-  { id: 'RON_98', label: 'RON 98' },
-  { id: 'DIESEL_CN_51', label: 'Diesel CN 51' },
-  { id: 'DIESEL_CN_53', label: 'Diesel CN 53' },
+  { id: 'RON_90', label: 'RON 90', common: 'Pertalite' },
+  { id: 'RON_92', label: 'RON 92', common: 'Pertamax, Shell Super, BP 92' },
+  { id: 'RON_95', label: 'RON 95', common: 'Pertamax Green, V-Power, BP Ultimate' },
+  { id: 'RON_98', label: 'RON 98', common: 'Pertamax Turbo, V-Power Nitro+' },
+  { id: 'DIESEL_CN_51', label: 'Diesel 51', common: 'Dexlite, V-Power Diesel' },
+  { id: 'DIESEL_CN_53', label: 'Diesel 53', common: 'Pertamina Dex' },
 ] as const;
 
 export const fuelStations: FuelStation[] = [

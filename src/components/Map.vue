@@ -1,10 +1,5 @@
 <template>
-  <div class="relative h-full w-full overflow-hidden bg-white">
-    <div
-      v-if="!mapReady"
-      class="absolute inset-0 z-[400] animate-pulse bg-[linear-gradient(110deg,#f8fafc_8%,#eef2f7_18%,#f8fafc_33%)] bg-[length:200%_100%]"
-      aria-hidden="true"
-    ></div>
+  <div class="relative h-full w-full overflow-hidden bg-trotoar">
     <div ref="mapContainer" class="h-full w-full"></div>
   </div>
 </template>
@@ -18,7 +13,6 @@ import { JAKARTA_BOUNDS } from '../data/stations';
 const props = defineProps<{
   stations: StationResult[];
   activeFuel: FuelType;
-  averagePrice: number;
   selectedStationId: string;
 }>();
 
@@ -27,25 +21,18 @@ const emit = defineEmits<{
 }>();
 
 const mapContainer = ref<HTMLElement>();
-const selectedStation = ref<StationResult | null>(null);
-const mapReady = ref(false);
 let map: L.Map | null = null;
 let markerLayer: L.LayerGroup | null = null;
 const landingCenter: L.LatLngExpression = [-6.1856, 106.8272];
 const landingZoom = 12;
 const stationZoom = 15;
 
+// Esri World Street Map: keyless, attribution required.
+const TILES = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
+const ATTRIBUTION = 'Tiles &copy; Esri, HERE, Garmin &middot; &copy; OpenStreetMap contributors';
+
 const activePrice = (station: StationResult) =>
   station.prices.find((price) => price.type === props.activeFuel)?.price ?? station.selectedPrice;
-
-const ron92Price = (station: StationResult) =>
-  station.prices.find((price) => price.type === 'RON_92')?.price ?? station.selectedPrice;
-
-const markerTone = (station: StationResult) => {
-  if (props.selectedStationId === station.id) return 'selected';
-  if (station.isCheapest) return 'cheapest';
-  return 'default';
-};
 
 const escapeHtml = (value: string) =>
   value
@@ -55,25 +42,13 @@ const escapeHtml = (value: string) =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
 
-const escapeAttribute = (value: string) => escapeHtml(value);
-
 const formatPrice = (price: number) => price.toLocaleString('id-ID');
 
 const routeUrl = (station: StationResult) =>
   station.googleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${station.latitude},${station.longitude}`;
 
-const brandLogo = (brand: string) => {
-  const logos: Record<string, string> = {
-    BP: '<span class="brand-logo brand-logo--bp"><i class="fa-solid fa-leaf" aria-hidden="true"></i></span>',
-    Shell: '<span class="brand-logo brand-logo--shell"><i class="fa-solid fa-fan" aria-hidden="true"></i></span>',
-    Vivo: '<span class="brand-logo brand-logo--vivo">V</span>',
-    Pertamina: '<span class="brand-logo brand-logo--pertamina"><i class="fa-solid fa-gas-pump" aria-hidden="true"></i></span>',
-  };
-  return logos[brand] ?? `<span class="brand-logo">${brand.charAt(0)}</span>`;
-};
-
 const clusterStations = () => {
-  if (!map || map.getZoom() >= 14) return props.stations.map((station) => [station] as StationResult[]);
+  if (!map || map.getZoom() >= 14) return props.stations.map((station) => [station]);
 
   const buckets = new globalThis.Map<string, StationResult[]>();
   props.stations.forEach((station) => {
@@ -83,48 +58,24 @@ const clusterStations = () => {
   return [...buckets.values()];
 };
 
-const clusterTone = (count: number) => {
-  if (count >= 10) return 'hot';
-  if (count >= 6) return 'warm';
-  if (count >= 3) return 'fresh';
-  return 'soft';
-};
-
 const createStationMarker = (station: StationResult) => {
-  const tone = markerTone(station);
-  const price = ron92Price(station);
-  const savings = Math.max(0, station.savingsPerLiter);
+  const tone = props.selectedStationId === station.id ? 'selected' : station.isCheapest ? 'cheapest' : 'default';
   const content = `
-    <div class="brand-pin brand-pin--${tone}" role="button" tabindex="0" aria-label="${escapeAttribute(station.brand)} ${escapeAttribute(station.name)}">
-      ${brandLogo(station.brand)}
-      ${station.isCheapest ? '<span class="brand-pin__flame"><i class="fa-solid fa-fire-flame-curved" aria-hidden="true"></i></span>' : ''}
-      <span class="price-tooltip">
-        <span class="price-tooltip__meta">${escapeHtml(station.brand)} · ${station.distanceKm.toFixed(1)} km</span>
+    <div class="pin pin--${tone}" role="button" tabindex="0" aria-label="${escapeHtml(station.name)}, Rp ${formatPrice(activePrice(station))} per liter">
+      <span class="pin__dot pin__dot--${station.brand.toLowerCase()}"></span>
+      <span class="pin__price">${formatPrice(activePrice(station))}</span>
+      <span class="pin__card">
         <strong>${escapeHtml(station.name)}</strong>
-        <span class="price-tooltip__price">RON92 Rp ${formatPrice(price)}/L</span>
-        <span class="price-tooltip__save">Hemat Rp ${formatPrice(savings)}/L</span>
-        <a class="price-tooltip__route" href="${escapeAttribute(routeUrl(station))}" target="_blank" rel="noopener noreferrer">
-          <i class="fa-solid fa-route" aria-hidden="true"></i>
-          Rute
-        </a>
+        <span>${escapeHtml(station.brand)}, ${station.distanceKm.toFixed(1)} km</span>
+        <a href="${escapeHtml(routeUrl(station))}" target="_blank" rel="noopener noreferrer">Buka rute</a>
       </span>
     </div>`;
 
   return L.marker([station.latitude, station.longitude], {
-    icon: L.divIcon({
-      html: content,
-      iconSize: [42, 42],
-      iconAnchor: [21, 21],
-      className: 'fuel-marker',
-    }),
+    icon: L.divIcon({ html: content, iconSize: [0, 0], iconAnchor: [0, 0], className: 'fuel-marker' }),
+    zIndexOffset: tone === 'selected' ? 1000 : tone === 'cheapest' ? 500 : 0,
   }).on('click', () => {
-    if (props.selectedStationId === station.id) {
-      selectedStation.value = null;
-      emit('select-station', null);
-      return;
-    }
-    selectedStation.value = station;
-    emit('select-station', station);
+    emit('select-station', props.selectedStationId === station.id ? null : station);
   });
 };
 
@@ -132,14 +83,11 @@ const createClusterMarker = (stations: StationResult[]) => {
   const cheapest = [...stations].sort((a, b) => activePrice(a) - activePrice(b))[0];
   return L.marker([cheapest.latitude, cheapest.longitude], {
     icon: L.divIcon({
-      html: `
-        <button class="gm-cluster gm-cluster--${clusterTone(stations.length)}" aria-label="${stations.length} SPBU terdekat">
-          <strong>${stations.length}</strong>
-          <span>mulai Rp ${formatPrice(ron92Price(cheapest))}</span>
-        </button>
-      `,
-      iconSize: [74, 44],
-      iconAnchor: [37, 37],
+      html: `<button class="cluster" aria-label="${stations.length} SPBU, mulai Rp ${formatPrice(activePrice(cheapest))}">
+          <strong>${stations.length}</strong><span>dari ${formatPrice(activePrice(cheapest))}</span>
+        </button>`,
+      iconSize: [0, 0],
+      iconAnchor: [0, 0],
       className: 'fuel-marker',
     }),
   }).on('click', () => {
@@ -150,18 +98,9 @@ const createClusterMarker = (stations: StationResult[]) => {
 const syncMarkers = () => {
   if (!map || !markerLayer) return;
   markerLayer.clearLayers();
-
   clusterStations().forEach((group) => {
-    const marker = group.length > 1 ? createClusterMarker(group) : createStationMarker(group[0]);
-    markerLayer?.addLayer(marker);
+    markerLayer?.addLayer(group.length > 1 ? createClusterMarker(group) : createStationMarker(group[0]));
   });
-
-  if (
-    selectedStation.value &&
-    !props.stations.some((station) => station.id === selectedStation.value?.id)
-  ) {
-    selectedStation.value = null;
-  }
 };
 
 const initMap = () => {
@@ -176,39 +115,22 @@ const initMap = () => {
     maxBounds: jakartaBounds,
     maxBoundsViscosity: 1,
     minZoom: landingZoom,
+    maxZoom: 18,
     zoomControl: false,
-    worldCopyJump: false,
   });
 
   L.control.zoom({ position: 'bottomright' }).addTo(map);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-    bounds: jakartaBounds,
-    maxZoom: 19,
-    minZoom: landingZoom,
-    noWrap: true,
-  }).addTo(map);
+  L.tileLayer(TILES, { maxZoom: 18, noWrap: true, attribution: ATTRIBUTION }).addTo(map);
 
   markerLayer = L.layerGroup().addTo(map);
   map.on('zoomend', syncMarkers);
-  map.setMaxBounds(jakartaBounds);
   map.setView(landingCenter, landingZoom);
-  map.setMinZoom(landingZoom);
-  map.setZoom(landingZoom, { animate: false });
-  window.setTimeout(() => {
-    map?.invalidateSize();
-    if (map && map.getZoom() < landingZoom) {
-      map.setZoom(landingZoom, { animate: false });
-    }
-  }, 250);
+  window.setTimeout(() => map?.invalidateSize(), 250);
   syncMarkers();
-  mapReady.value = true;
 };
 
 const flyToStation = (station: StationResult) => {
-  if (!map) return;
-  map.flyTo([station.latitude, station.longitude], stationZoom, { duration: 0.9 });
-  selectedStation.value = station;
+  map?.flyTo([station.latitude, station.longitude], stationZoom, { duration: 0.9 });
 };
 
 defineExpose({ flyToStation });
@@ -218,11 +140,7 @@ onMounted(async () => {
   initMap();
 });
 
-watch(
-  () => [props.stations, props.activeFuel, props.averagePrice, props.selectedStationId],
-  () => syncMarkers(),
-  { deep: true },
-);
+watch(() => [props.stations, props.activeFuel, props.selectedStationId], syncMarkers, { deep: true });
 </script>
 
 <style>
@@ -231,245 +149,174 @@ watch(
   border: none !important;
 }
 
-.leaflet-control-zoom a {
-  color: #0f172a;
-}
-
-.leaflet-tile-pane {
-  filter: saturate(0.74) contrast(0.98) brightness(1.04);
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: var(--color-trotoar);
 }
 
 .leaflet-control-zoom {
+  border: 1px solid var(--color-garis) !important;
+  border-radius: 10px !important;
   overflow: hidden;
-  border: 0 !important;
-  border-radius: 14px !important;
-  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.16) !important;
+  box-shadow: none !important;
 }
 
-.brand-logo {
-  display: grid;
-  width: 28px;
-  height: 28px;
-  place-items: center;
+.leaflet-control-zoom a {
+  color: var(--color-aspal) !important;
+}
+
+/* Mobile: station sheet covers the bottom 42vh; lift controls above it, pinch replaces zoom buttons. */
+@media (max-width: 1023px) {
+  .leaflet-bottom { bottom: 42vh; }
+  .leaflet-control-zoom { display: none; }
+}
+
+.leaflet-control-attribution {
+  font-size: 10px;
+  background: rgb(255 255 255 / 0.8) !important;
+}
+
+/* Price pin: anchored by its bottom-center tip. */
+.pin {
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px 3px 5px;
   border-radius: 999px;
-  font-size: 13px;
-  font-weight: 900;
-}
-
-.brand-logo--bp {
-  color: #15803d;
-  background: #dcfce7;
-}
-
-.brand-logo--shell {
-  color: #991b1b;
-  background: #fef3c7;
-}
-
-.brand-logo--vivo {
-  color: #ffffff;
-  background: #2563eb;
-}
-
-.brand-logo--pertamina {
-  color: #ffffff;
-  background: #ef4444;
-}
-
-.brand-pin {
-  position: relative;
-  display: grid;
-  width: 38px;
-  height: 38px;
-  place-items: center;
-  border: 2px solid #ffffff;
-  border-radius: 999px;
-  background: #ffffff;
-  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18);
+  background: #fff;
+  color: var(--color-petrol);
+  border: 1px solid var(--color-petrol);
+  box-shadow: 0 2px 6px rgb(30 35 40 / 0.18);
+  transform: translateX(-50%);
+  white-space: nowrap;
   cursor: pointer;
-  transform-origin: center;
-  transition:
-    box-shadow 180ms ease,
-    outline-color 180ms ease,
-    transform 180ms ease;
 }
 
-.brand-pin:hover {
-  z-index: 800;
-  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.24);
-  transform: scale(1.08);
-}
-
-.brand-pin--cheapest {
-  outline: 3px solid rgba(16, 185, 129, 0.5);
-  box-shadow: 0 14px 30px rgba(16, 185, 129, 0.28);
-}
-
-.brand-pin--selected {
-  z-index: 900;
-  outline: 3px solid rgba(37, 99, 235, 0.72);
-  transform: scale(1.14);
-  animation: selectedPulse 1.8s ease-in-out infinite;
-}
-
-.brand-pin__flame {
-  position: absolute;
-  top: -7px;
-  right: -5px;
-  display: grid;
-  width: 18px;
-  height: 18px;
-  place-items: center;
-  border: 2px solid #ffffff;
-  border-radius: 999px;
-  background: #10b981;
-  color: #ffffff;
-  font-size: 9px;
-}
-
-.price-tooltip {
-  position: absolute;
-  bottom: calc(100% + 12px);
-  left: 50%;
-  z-index: 1000;
-  display: grid;
-  width: 210px;
-  gap: 4px;
-  padding: 12px;
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 24px 55px rgba(15, 23, 42, 0.2);
-  color: #0f172a;
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  opacity: 0;
-  pointer-events: none;
-  text-align: left;
-  transform: translate(-50%, 8px);
-  transition:
-    opacity 160ms ease,
-    transform 160ms ease;
-}
-
-.price-tooltip::after {
-  position: absolute;
-  bottom: -6px;
-  left: 50%;
-  width: 12px;
-  height: 12px;
-  border-right: 1px solid rgba(226, 232, 240, 0.9);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
-  background: #ffffff;
+.pin::after {
   content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+  border-right: inherit;
+  border-bottom: inherit;
   transform: translateX(-50%) rotate(45deg);
 }
 
-.brand-pin:hover .price-tooltip,
-.brand-pin--selected .price-tooltip {
+.pin__price {
+  font-family: var(--font-board);
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.pin__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.pin__dot--pertamina { background: #d7262e; }
+.pin__dot--shell { background: #f2c500; }
+.pin__dot--bp { background: #128a3e; }
+.pin__dot--vivo { background: #1f5fd1; }
+
+.pin--cheapest {
+  background: var(--color-petrol-deep);
+  border-color: var(--color-petrol-deep);
+  color: var(--color-lampu);
+}
+
+.pin--selected {
+  background: var(--color-teal);
+  border-color: var(--color-teal);
+  color: #fff;
+  z-index: 10;
+}
+
+.pin__card {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  display: grid;
+  gap: 2px;
+  width: 220px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--color-aspal);
+  border: 1px solid var(--color-garis);
+  box-shadow: 0 10px 30px rgb(30 35 40 / 0.18);
+  font-size: 12px;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 4px);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.pin__card strong {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pin__card span {
+  color: var(--color-redup);
+}
+
+.pin__card a {
+  margin-top: 8px;
+  color: var(--color-teal) !important;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pin:hover .pin__card,
+.pin:focus-visible .pin__card,
+.pin--selected .pin__card {
   opacity: 1;
   pointer-events: auto;
   transform: translate(-50%, 0);
 }
 
-.price-tooltip__meta,
-.price-tooltip__save {
-  color: #64748b;
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.price-tooltip strong {
-  overflow: hidden;
-  font-size: 13px;
-  font-weight: 950;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.price-tooltip__price {
-  color: #0f172a;
-  font-size: 15px;
-  font-weight: 950;
-}
-
-.price-tooltip__route {
-  z-index: 1;
-  display: inline-flex;
-  width: max-content;
-  align-items: center;
-  gap: 6px;
-  margin-top: 6px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(29, 78, 216, 0.22);
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: #ffffff !important;
-  font-size: 12px;
-  font-weight: 950;
-  text-decoration: none;
-  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.28);
-}
-
-.price-tooltip__route i {
-  color: #ffffff;
-}
-
-.gm-cluster {
+.cluster {
+  position: absolute;
+  left: 0;
+  top: 0;
   display: grid;
-  min-width: 74px;
-  gap: 1px;
-  padding: 8px 11px;
-  border: 2px solid #ffffff;
+  place-items: center;
+  width: max-content;
+  min-width: 56px;
+  padding: 6px 10px;
+  white-space: nowrap;
+  border: 2px solid #fff;
   border-radius: 999px;
-  background: linear-gradient(135deg, #38bdf8, #2563eb);
-  color: #ffffff;
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.22);
+  background: var(--color-petrol);
+  color: #fff;
+  box-shadow: 0 3px 10px rgb(30 35 40 / 0.25);
+  transform: translate(-50%, -50%);
+  font: inherit;
   cursor: pointer;
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  text-align: center;
-  transition: transform 180ms ease;
 }
 
-.gm-cluster:hover {
-  transform: scale(1.08);
-}
-
-.gm-cluster--soft {
-  background: linear-gradient(135deg, #38bdf8, #2563eb);
-}
-
-.gm-cluster--fresh {
-  background: linear-gradient(135deg, #22c55e, #14b8a6);
-}
-
-.gm-cluster--warm {
-  background: linear-gradient(135deg, #f59e0b, #f97316);
-}
-
-.gm-cluster--hot {
-  background: linear-gradient(135deg, #f472b6, #ef4444);
-  box-shadow: 0 16px 34px rgba(239, 68, 68, 0.28);
-}
-
-.gm-cluster strong {
-  font-size: 14px;
-  font-weight: 950;
+.cluster strong {
+  font-family: var(--font-board);
+  font-size: 18px;
+  font-weight: 800;
   line-height: 1;
 }
 
-.gm-cluster span {
-  font-size: 9px;
-  font-weight: 800;
-  opacity: 0.82;
-}
-
-@keyframes selectedPulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.28), 0 14px 30px rgba(37, 99, 235, 0.22);
-  }
-  50% {
-    box-shadow: 0 0 0 7px rgba(37, 99, 235, 0), 0 18px 34px rgba(37, 99, 235, 0.26);
-  }
+.cluster span {
+  font-size: 10px;
+  color: var(--color-lampu);
+  line-height: 1.2;
 }
 </style>
